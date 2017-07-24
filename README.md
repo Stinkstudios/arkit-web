@@ -21,6 +21,7 @@ A starter kit for using ARKit with WebGL
 
 ## Todo
 
+* [hitTest(_:types:)](https://developer.apple.com/documentation/arkit/arframe/2875718-hittest) **WIP**
 * More seamless tracking? There's a slight delay between Metal and WebGL frames. [Related article](https://stackoverflow.com/questions/38382473/synchronize-rendering-between-native-opengl-and-webgl-in-wkwebview-ios).
 * Camera texture to WebGL
 * Object occlusion using a depth texture

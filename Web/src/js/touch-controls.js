@@ -24,7 +24,8 @@ export default class TouchControls {
     const pointers = [];
 
     if (event.touches !== undefined) {
-      Object.values(event.touches).forEach(pointer => {
+      Object.keys(event.touches).forEach(key => {
+        const pointer = event.touches[key];
         pointers.push({
           x: pointer.pageX / window.innerWidth,
           y: pointer.pageY / window.innerHeight
@@ -42,20 +43,19 @@ export default class TouchControls {
 
   onTouchStart(event) {
     this.isDown = true;
-    const pointers = this.getPointers(event);
-    this.emit('start', pointers);
+    this.pointers = this.getPointers(event);
+    this.emit('start', this.pointers);
   }
 
   onTouchMove(event) {
     if (this.isDown) {
-      const pointers = this.getPointers(event);
-      this.emit('move', pointers);
+      this.pointers = this.getPointers(event);
+      this.emit('move', this.pointers);
     }
   }
 
-  onTouchEnd(event) {
+  onTouchEnd() {
     this.isDown = false;
-    const pointers = this.getPointers(event);
-    this.emit('end', pointers);
+    this.emit('end', this.pointers);
   }
 }

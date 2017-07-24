@@ -17,8 +17,8 @@ extension MTKView : RenderDestinationProvider {
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
 
-    let DEBUG = false
-    let DEV_URL = "https://2d297f28.ngrok.io"
+    let DEBUG = true
+    let DEV_URL = "https://511450eb.ngrok.io"
 
     var session: ARSession!
     var renderer: Renderer!
@@ -131,12 +131,65 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             session.add(anchor: anchor)
         }
     }
+    
+    /**
+     Perform a hitTest
+     
+     Reference: https://developer.apple.com/documentation/arkit/arframe/2875718-hittest
+     */
+    func hitTest(point: CGPoint, hitType: NSNumber) {
+        if let currentFrame = session.currentFrame {
+            let hitTestResults = currentFrame.hitTest(point, types: ARHitTestResult.ResultType(rawValue: ARHitTestResult.ResultType.RawValue(hitType))) as! [ARHitTestResult]
+            
+            var data = Dictionary<String, Any>()
+            var results = [Any]()
+            
+            for (_, result) in hitTestResults.enumerated() {
+                var hitTest = Dictionary<String, Any>()
+                hitTest["distance"] = result.distance
+                hitTest["localTransform"] = "\(result.localTransform)"
+                hitTest["worldTransform"] = "\(result.worldTransform)"
+                //hitTest["anchor"] = "\(result.anchor)" // TODO
+                results.append(hitTest)
+            }
+            data["results"] = results
+            
+            // Convert dic to json and send to the web view
+            do {
+                let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+                
+                let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+                
+                let fn = "onHitTest('\(jsonData)\')";
+                self.webView.evaluateJavaScript(fn, completionHandler: { (html: AnyObject?, error: NSError?) in
+                    print(html!)
+                    } as? (Any?, Error?) -> Void)
+            } catch {
+                print("error serialising json")
+            }
+        }
+        
+    }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         // Handle message callbacks from javascript
         if(message.name == "touchCallbackHandler") {
-            // print("touch \(message.body)")
-            self.addAnchor()
+            
+            // We send an object from the client, we receive it as a NSDictionary
+            let data = message.body as! NSDictionary
+            let action = data["action"] as! String
+            
+            switch(action) {
+                case "addAnchor":
+                    self.addAnchor()
+                case "hitTest":
+                    let point = data["value"] as! NSDictionary
+                    let x = point["x"] as! Double
+                    let y = point["y"] as! Double
+                    let hitType = data["hitType"] as! NSNumber
+                    self.hitTest(point: CGPoint.init(x: x, y: y), hitType: hitType)
+                default: break
+            }
         }
     }
 
@@ -222,13 +275,46 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         renderer.update()
     }
 
+    /**
+     This is called when new anchors are added to the session.
+
+     @param session The session being run.
+     @param anchors An array of added anchors.
+     */
+    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        print("Anchors added")
+    }
+
+    /**
+     This is called when anchors are updated.
+
+     @param session The session being run.
+     @param anchors An array of updated anchors.
+     */
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        // print("Anchors updated")
+        //print(anchors)
+    }
+
+    /**
+     This is called when anchors are removed from the session.
+
+     @param session The session being run.
+     @param anchors An array of removed anchors.
+     */
+    func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+        print("Anchors removed")
+    }
+
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
-
+        // (If the user leaves the app)
+        print("sessionWasInterrupted")
     }
 
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
-
+        // When the user returns to the app
+        print("sessionInterruptionEnded")
     }
 }

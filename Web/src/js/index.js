@@ -6,13 +6,15 @@ import {
   Object3D,
   PlaneBufferGeometry,
   Matrix4,
-  DoubleSide
+  DoubleSide,
+  Math as MathUtils
 } from 'three';
 import FastClick from 'fastclick';
 import OrbitControls from 'lib/OrbitControls';
 import RenderStats from 'lib/render-stats';
 import stats from 'lib/stats';
-import * as SwiftUtils from 'utils/swift';
+import * as ARKitUtils from 'arkit/utils';
+import * as ARKIT from 'arkit/constants';
 import lights from './lights';
 import { cameraDev, cameraARParent, cameraAR } from './cameras';
 import renderer from './renderer';
@@ -60,6 +62,7 @@ class App {
 
     // Update reference
     window.onARFrame = this.onARFrame;
+    window.onHitTest = this.onHitTest;
 
     // Use same geometry for all anchors
     const size = 0.077;
@@ -72,18 +75,18 @@ class App {
   onARFrame = json => {
     const data = JSON.parse(json);
 
-    data.cameraTransform = SwiftUtils.parseSimdFloat4x4(data.cameraTransform);
-    data.cameraProjection = SwiftUtils.parseSimdFloat4x4(data.cameraProjection);
-    data.matrixWorldInverse = SwiftUtils.parseSimdFloat4x4(
+    data.cameraTransform = ARKitUtils.parseSimdFloat4x4(data.cameraTransform);
+    data.cameraProjection = ARKitUtils.parseSimdFloat4x4(data.cameraProjection);
+    data.matrixWorldInverse = ARKitUtils.parseSimdFloat4x4(
       data.matrixWorldInverse
     );
 
     for (let i = 0; i < data.anchors.length; i += 1) {
       if (data.anchors[i].type === 'ARPlaneAnchor') {
-        data.anchors[i].center = SwiftUtils.parseFloat3(data.anchors[i].center);
-        data.anchors[i].extent = SwiftUtils.parseFloat3(data.anchors[i].extent);
+        data.anchors[i].center = ARKitUtils.parseFloat3(data.anchors[i].center);
+        data.anchors[i].extent = ARKitUtils.parseFloat3(data.anchors[i].extent);
       }
-      data.anchors[i].transform = SwiftUtils.parseSimdFloat4x4(
+      data.anchors[i].transform = ARKitUtils.parseSimdFloat4x4(
         data.anchors[i].transform
       );
     }
@@ -94,18 +97,42 @@ class App {
     this._render();
   };
 
+  onHitTest = json => {
+    const data = JSON.parse(json);
+    console.log('onHitTest', data, json);
+  };
+
   _bindListeners() {
     window.addEventListener('resize', this._onResize, false);
     this.touchControls.on('end', this.onTouch);
   }
 
-  onTouch = () => {
+  onTouch = event => {
+    // const data = {
+    //   action: 'addAnchor',
+    //   value: null
+    // };
+
+    const data = {
+      action: 'hitTest',
+      value: {
+        x: MathUtils.clamp(event[0].x, 0, 1),
+        y: MathUtils.clamp(event[0].y, 0, 1)
+      },
+      hitType: ARKIT.ARHitTestResultType.ExistingPlane
+    };
+
+    this.postMessage(data);
+  };
+
+  postMessage(data) {
     try {
-      window.webkit.messageHandlers.touchCallbackHandler.postMessage('touch');
+      console.log(data);
+      window.webkit.messageHandlers.touchCallbackHandler.postMessage(data);
     } catch (err) {
       console.log('The native context does not exist yet'); // eslint-disable-line
     }
-  };
+  }
 
   zoom(camera, zoom) {
     camera.position.set(1 * zoom, 0.75 * zoom, 1 * zoom);
@@ -120,15 +147,15 @@ class App {
       this.data.matrixWorldInverse &&
       this.data.cameraProjection
     ) {
-      SwiftUtils.copyMatrix4Elements(
+      ARKitUtils.copyMatrix4Elements(
         cameraARParent.matrix,
         this.data.cameraTransform
       );
-      SwiftUtils.copyMatrix4Elements(
+      ARKitUtils.copyMatrix4Elements(
         cameraAR.matrixWorldInverse,
         this.data.matrixWorldInverse
       );
-      SwiftUtils.copyMatrix4Elements(
+      ARKitUtils.copyMatrix4Elements(
         cameraAR.projectionMatrix,
         this.data.cameraProjection
       );
@@ -168,7 +195,7 @@ class App {
 
     this.anchors[anchor.uuid].add(mesh);
     this.anchors[anchor.uuid].matrixAutoUpdate = false;
-    SwiftUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.uuid].matrix,
       anchor.transform
     );
@@ -198,7 +225,7 @@ class App {
 
     this.anchors[anchor.uuid].add(mesh);
     this.anchors[anchor.uuid].matrixAutoUpdate = false;
-    SwiftUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.uuid].matrix,
       anchor.transform
     );
@@ -207,14 +234,14 @@ class App {
   }
 
   updateMesh(anchor) {
-    SwiftUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.uuid].matrix,
       anchor.transform
     );
   }
 
   updatePlaneMesh(anchor) {
-    SwiftUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.uuid].matrix,
       anchor.transform
     );
