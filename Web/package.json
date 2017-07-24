@@ -26,7 +26,8 @@
     "lint:fix": "eslint --ext .js ./src --cache --fix",
     "lint:js": "yarn run lint:eslint",
     "lint": "yarn run lint:js && yarn run lint:css",
-    "precommit": "yarn run lint"
+    "precommit": "yarn run lint",
+    "tunnel": "ngrok http 8080"
   },
   "repository": {
     "type": "git",

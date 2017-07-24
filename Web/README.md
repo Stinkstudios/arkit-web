@@ -1,12 +1,12 @@
-# WebGL Sketch
+# Web
 
-A fast webgl sketch framework using three.
+The WebGL content for rendering the AR scene.
 
-Features some useful scripts for use in a production WebGL project.
+The setup is fairly minimal to allow you the developer to use your prefered WebGL authoring approach.  
 
-# Features
- * Convert obj to Draco using [https://github.com/google/draco/](https://github.com/google/draco/)
+# Tasks
 
- * gltf2 format using [Blender Exporter](https://github.com/KhronosGroup/glTF-Blender-Exporter)
+* `yarn start` - Start the dev server. *Note `.env` needs to be created first*
+* `yarn tunnel` - Start an ngrok connection for live development when the iOS app has been launched
 
- * Automatic texture size conversion
+Check package.json for the rest
