@@ -16,7 +16,10 @@ extension MTKView : RenderDestinationProvider {
 }
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
-  
+    
+    let DEBUG = true
+    let DEV_URL = "https://2d297f28.ngrok.io"
+    
     var session: ARSession!
     var renderer: Renderer!
     var webView: WKWebView!
@@ -58,8 +61,15 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             
             view.addSubview(webView)
             
-            let url = URL(string: "https://a5036fa4.ngrok.io")!
-            webView.load(URLRequest(url: url))
+            // Use ngrok for live reload developing
+            if (DEBUG) {
+                let url = URL(string: DEV_URL)!
+                webView.load(URLRequest(url: url))
+            } else {
+                if let path = Bundle.main.path(forResource: "www/index", ofType: "html") {
+                    webView.load(URLRequest(url: URL(fileURLWithPath: path)))
+                }
+            }
             
             guard view.device != nil else {
                 print("Metal is not supported on this device")
@@ -129,7 +139,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         }
     }
     
-    @objc
+//    @objc
 //    func handleTap(gestureRecognize: UITapGestureRecognizer) {
 //        // Create anchor using the camera's current position
 //        if let currentFrame = session.currentFrame {
@@ -215,7 +225,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             let fn = "onARFrame('\(jsonData)\')";
             self.webView.evaluateJavaScript(fn, completionHandler: { (html: AnyObject?, error: NSError?) in
                 print(html!)
-                } as? (Any?, Error?) -> Void)
+            } as? (Any?, Error?) -> Void)
         } catch {
          print("error serialising json")
         }

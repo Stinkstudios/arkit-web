@@ -1,5 +1,6 @@
 // Directory names
-const BUILD = 'public';
+// const BUILD = 'public';
+const BUILD = '../ARKitWeb/www';
 const ASSETS = 'assets';
 const CSS = 'css';
 const JS = 'js';

@@ -3,7 +3,7 @@
 *.sublime-*
 bower_components
 node_modules
-*.map.js
+*.js.map
 npm-debug.log
 !.gitinclude
 .stylelintcache

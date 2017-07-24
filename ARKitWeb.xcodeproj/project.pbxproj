@@ -14,6 +14,7 @@
 		9C4562691F21FB7D00A1472B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C4562671F21FB7D00A1472B /* Main.storyboard */; };
 		9C45626B1F21FB7D00A1472B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C45626A1F21FB7D00A1472B /* Assets.xcassets */; };
 		9C45626E1F21FB7D00A1472B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C45626C1F21FB7D00A1472B /* LaunchScreen.storyboard */; };
+		9C8B04801F26299B00618E78 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 9C8B047F1F26299B00618E78 /* www */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		9C45626D1F21FB7D00A1472B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C45626F1F21FB7D00A1472B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9C4562701F21FB7D00A1472B /* ARKitWeb-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARKitWeb-Bridging-Header.h"; sourceTree = "<group>"; };
+		9C8B047F1F26299B00618E78 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +62,7 @@
 		9C45625D1F21FB7D00A1472B /* ARKitWeb */ = {
 			isa = PBXGroup;
 			children = (
-				9CC9C7D61F25F2B60095D5E0 /* Resources */,
+				9C8B047F1F26299B00618E78 /* www */,
 				9C45625E1F21FB7D00A1472B /* AppDelegate.swift */,
 				9C4562601F21FB7D00A1472B /* Shaders.metal */,
 				9C4562621F21FB7D00A1472B /* ShaderTypes.h */,
@@ -73,13 +75,6 @@
 				9C4562701F21FB7D00A1472B /* ARKitWeb-Bridging-Header.h */,
 			);
 			path = ARKitWeb;
-			sourceTree = "<group>";
-		};
-		9CC9C7D61F25F2B60095D5E0 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +135,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C8B04801F26299B00618E78 /* www in Resources */,
 				9C45626E1F21FB7D00A1472B /* LaunchScreen.storyboard in Resources */,
 				9C45626B1F21FB7D00A1472B /* Assets.xcassets in Resources */,
 				9C4562691F21FB7D00A1472B /* Main.storyboard in Resources */,

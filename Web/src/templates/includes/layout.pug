@@ -1,13 +1,12 @@
 doctype html
 html
-	head
-		meta(charset='utf-8')
-		meta(http-equiv="x-ua-compatible" content="ie=edge")
-		title #{meta.title}
-		meta(name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0")
-		link(rel='stylesheet', href=`${baseUrl}assets/css/${cssFile}`)
-		script(defer src=`${baseUrl}assets/js/third-party/modernizr/modernizr.min.js`)
-	body
-		main
-			block content
-		script(defer src=`${baseUrl}assets/js/${jsFile}`)
+  head
+    meta(charset='utf-8')
+    meta(http-equiv="x-ua-compatible" content="ie=edge")
+    title #{meta.title}
+    meta(name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0")
+    link(rel='stylesheet', href=`${baseUrl}assets/css/${cssFile}`)
+  body
+    main
+      block content
+    script(defer src=`${baseUrl}assets/js/${jsFile}`)
