@@ -8,3 +8,4 @@ npm-debug.log
 !.gitinclude
 .stylelintcache
 .env
+/ARKitWeb.xcodeproj/project.xcworkspace/xcuserdata/amelie.xcuserdatad/UserInterfaceState.xcuserstate
