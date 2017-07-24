@@ -10,3 +10,5 @@ npm-debug.log
 .env
 /ARKitWeb.xcodeproj/project.xcworkspace/xcuserdata/amelie.xcuserdatad/UserInterfaceState.xcuserstate
 /Web/public
+/ARKitWeb/www/assets/css/*
+/ARKitWeb/www/assets/js/*
