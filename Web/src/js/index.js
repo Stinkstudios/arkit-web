@@ -61,6 +61,10 @@ class App {
     // Update reference
     window.onARFrame = this.onARFrame;
 
+    // Use same geometry for all anchors
+    const size = 0.077;
+    this.boxGeometry = new BoxBufferGeometry(size, size, size);
+
     this._bindListeners();
     this._onResize();
   }
@@ -151,11 +155,10 @@ class App {
   addMesh(anchor) {
     console.log('adding', anchor.uuid); // eslint-disable-line
 
-    const size = 0.077;
     this.anchors[anchor.uuid] = new Object3D();
 
     const mesh = new Mesh(
-      new BoxBufferGeometry(size, size, size),
+      this.boxGeometry,
       new MeshLambertMaterial({
         color: 0xffffff * Math.random(),
         wireframe: false
