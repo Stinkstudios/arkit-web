@@ -59,6 +59,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             webView.scrollView.backgroundColor = UIColor.clear
             webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             
+            // Add the webview as a subview of MTKView
             view.addSubview(webView)
             
             // Use ngrok for live reload developing
@@ -81,15 +82,13 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             
             renderer.drawRectResized(size: view.bounds.size)
         }
-        
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(gestureRecognize:)))
-//        view.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Create a session configuration
+        // Reference: https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration
         let configuration = ARWorldTrackingSessionConfiguration()
         configuration.worldAlignment = .gravity
         configuration.planeDetection = .horizontal
@@ -112,14 +111,13 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     
     /**
      Add an anchor to the session
-     The tap is currently initiated from the web view
+     The tap is currently initiated from the web view since it captures all guestures
+     
+     Reference: https://developer.apple.com/documentation/arkit/aranchor
      */
     func addAnchor() {
         if (!ARWorldTrackingSessionConfiguration.isSupported) { return }
         if let currentFrame = session.currentFrame {
-            
-            print("addAnchor")
-            
             // Create a transform with a translation of 0.2 meters in front of the camera
             var translation = matrix_identity_float4x4
             translation.columns.3.z = -1
@@ -127,6 +125,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             
             // Add a new anchor to the session
             let anchor = ARAnchor(transform: transform)
+            
+            print("addAnchor \(anchor.identifier)")
+            
             session.add(anchor: anchor)
         }
     }
@@ -138,22 +139,6 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             self.addAnchor()
         }
     }
-    
-//    @objc
-//    func handleTap(gestureRecognize: UITapGestureRecognizer) {
-//        // Create anchor using the camera's current position
-//        if let currentFrame = session.currentFrame {
-//            
-//            // Create a transform with a translation of 0.2 meters in front of the camera
-//            var translation = matrix_identity_float4x4
-//            translation.columns.3.z = -0.2
-//            let transform = simd_mul(currentFrame.camera.transform, translation)
-//            
-//            // Add a new anchor to the session
-//            let anchor = ARAnchor(transform: transform)
-//            session.add(anchor: anchor)
-//        }
-//    }
     
     // MARK: - MTKViewDelegate
     
@@ -208,15 +193,19 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             ambientIntensity = Float(lightEstimate.ambientIntensity) / 1000.0
         }
         
-        // Store all data in dict to send to the web view
+        // Store all data in dict, parse as json to send to the web view
+        // floats and matrix strings need to be parsed client side
         var data = Dictionary<String, Any>()
         data["matrixWorldInverse"] = "\(simd_inverse(frame.camera.transform))"
         data["cameraTransform"] = "\(frame.camera.transform)"
+        
+        // The projection matrix here matches the one in Renderer.swift
         data["cameraProjection" ] = "\(frame.camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
         data["anchors"] = anchors
         data["ambientIntensity"] = ambientIntensity
         //data["pointCloud"] = frame.rawFeaturePoints?.points
         
+        // Convert dic to json and send to the web view
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             
