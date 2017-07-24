@@ -1,0 +1,4 @@
+src/assets/*
+public/*
+src/**/*.glsl.js
+src/js/lib/*
