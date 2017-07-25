@@ -10,14 +10,18 @@ export default class TouchControls {
     element.addEventListener(
       'touchstart',
       event => this.onTouchStart(event),
-      true
+      false
     );
     element.addEventListener(
       'touchmove',
       event => this.onTouchMove(event),
-      true
+      false
     );
-    element.addEventListener('touchend', event => this.onTouchEnd(event), true);
+    element.addEventListener(
+      'touchend',
+      event => this.onTouchEnd(event),
+      false
+    );
   }
 
   getPointers(event) {

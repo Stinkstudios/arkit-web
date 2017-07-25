@@ -17,8 +17,8 @@ extension MTKView : RenderDestinationProvider {
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
 
-    let DEBUG = true
-    let DEV_URL = "https://511450eb.ngrok.io"
+    let DEBUG = false
+    let DEV_URL = "https://8570dbe5.ngrok.io"
 
     var session: ARSession!
     var renderer: Renderer!
@@ -45,7 +45,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             contentController.add(
                 self,
-                name: "touchCallbackHandler"
+                name: "callbackHandler"
             )
 
             let config = WKWebViewConfiguration()
@@ -132,6 +132,62 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         }
     }
     
+    func removeAnchors(identifiers: [NSString]) {
+        print("removeAnchors")
+        print(identifiers)
+        
+        if let currentFrame = session.currentFrame {
+            for (_, anchor) in currentFrame.anchors.enumerated() {
+                for (_, identifier) in identifiers.enumerated() {
+                    let uuid = UUID.init(uuidString: identifier as String)
+                    if (uuid == anchor.identifier) {
+                        session.remove(anchor: anchor)
+                    }
+                }
+            }
+        }
+    }
+    
+    func getCameraData(camera: ARCamera) -> Dictionary<String, Any> {
+        var data = Dictionary<String, Any>()
+        data["transform"] = "\(camera.transform)"
+        // The projection matrix here matches the one in Renderer.swift
+        data["projection" ] = "\(camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
+        data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))"
+        return data
+    }
+    
+    func getAnchorData(anchor: ARAnchor) -> Dictionary<String, Any> {
+        var data = Dictionary<String, Any>()
+        data["type"] = "ARAnchor"
+        data["identifier"] = String(describing: anchor.identifier)
+        data["transform"] = "\(anchor.transform)"
+        return data
+    }
+    
+    func getAnchorPlaneData(anchor: ARPlaneAnchor) -> Dictionary<String, Any> {
+        var data = Dictionary<String, Any>()
+        data["type"] = "ARPlaneAnchor"
+        data["identifier"] = String(describing: anchor.identifier)
+        data["transform"] = "\(anchor.transform)"
+        data["center"] = "\(anchor.center)"
+        data["extent"] = "\(anchor.extent)"
+        return data
+    }
+    
+    func getAnchorsData(anchors: [ARAnchor]) -> [Any] {
+        var data = [Any]()
+        for (_, anchor) in anchors.enumerated() {
+            switch anchor {
+            case let planeAnchor as ARPlaneAnchor:
+                data.append(self.getAnchorPlaneData(anchor: planeAnchor))
+            default:
+                data.append(self.getAnchorData(anchor: anchor))
+            }
+        }
+        return data
+    }
+    
     /**
      Perform a hitTest
      
@@ -139,31 +195,48 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      */
     func hitTest(point: CGPoint, hitType: NSNumber) {
         if let currentFrame = session.currentFrame {
-            let hitTestResults = currentFrame.hitTest(point, types: ARHitTestResult.ResultType(rawValue: ARHitTestResult.ResultType.RawValue(hitType))) as! [ARHitTestResult]
+            let hitTestResults = currentFrame.hitTest(point, types: ARHitTestResult.ResultType(rawValue: ARHitTestResult.ResultType.RawValue(truncating: hitType)))
             
             var data = Dictionary<String, Any>()
             var results = [Any]()
             
             for (_, result) in hitTestResults.enumerated() {
                 var hitTest = Dictionary<String, Any>()
-                hitTest["distance"] = result.distance
-                hitTest["localTransform"] = "\(result.localTransform)"
-                hitTest["worldTransform"] = "\(result.worldTransform)"
-                //hitTest["anchor"] = "\(result.anchor)" // TODO
+                hitTest["type"] = result.type.rawValue
+                
+                switch(result.type) {
+                    case ARHitTestResult.ResultType.featurePoint:
+                        hitTest["localTransform"] = "\(result.localTransform)"
+                        hitTest["worldTransform"] = "\(result.worldTransform)"
+                    case ARHitTestResult.ResultType.estimatedHorizontalPlane:
+                        hitTest["distance"] = result.distance
+                        hitTest["localTransform"] = "\(result.localTransform)"
+                        hitTest["worldTransform"] = "\(result.worldTransform)"
+                    case ARHitTestResult.ResultType.existingPlane:
+                        hitTest["distance"] = result.distance
+                        hitTest["localTransform"] = "\(result.localTransform)"
+                        hitTest["worldTransform"] = "\(result.worldTransform)"
+                        hitTest["anchor"] = self.getAnchorPlaneData(anchor: result.anchor! as! ARPlaneAnchor)
+                    case ARHitTestResult.ResultType.existingPlaneUsingExtent:
+                        hitTest["distance"] = result.distance
+                        hitTest["localTransform"] = "\(result.localTransform)"
+                        hitTest["worldTransform"] = "\(result.worldTransform)"
+                        hitTest["anchor"] = self.getAnchorPlaneData(anchor: result.anchor! as! ARPlaneAnchor)
+                    default:
+                        break
+                }
+                
                 results.append(hitTest)
             }
-            data["results"] = results
             
-            // Convert dic to json and send to the web view
+            data["results"] = results
+
             do {
                 let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-                
                 let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
-                
-                let fn = "onHitTest('\(jsonData)\')";
-                self.webView.evaluateJavaScript(fn, completionHandler: { (html: AnyObject?, error: NSError?) in
-                    print(html!)
-                    } as? (Any?, Error?) -> Void)
+
+                let api = "ARKit.onHitTest('\(jsonData)\')";
+                self.callClient(api: api)
             } catch {
                 print("error serialising json")
             }
@@ -173,7 +246,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         // Handle message callbacks from javascript
-        if(message.name == "touchCallbackHandler") {
+        if(message.name == "callbackHandler") {
             
             // We send an object from the client, we receive it as a NSDictionary
             let data = message.body as! NSDictionary
@@ -182,6 +255,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             switch(action) {
                 case "addAnchor":
                     self.addAnchor()
+                case "removeAnchors":
+                    let identifiers = data["value"] as! [NSString]
+                    self.removeAnchors(identifiers: identifiers)
                 case "hitTest":
                     let point = data["value"] as! NSDictionary
                     let x = point["x"] as! Double
@@ -219,27 +295,6 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      as well as information about camera parameters and anchor transforms you can use for rendering virtual content on top of the camera image.
      */
      func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        var anchors = [Any]()
-        for (_, anchor) in frame.anchors.enumerated() {
-
-            var anchorData = Dictionary<String, Any>()
-
-            switch anchor {
-                case let planeAnchor as ARPlaneAnchor:
-                    anchorData["type"] = "ARPlaneAnchor"
-                    anchorData["uuid"] = String(describing: planeAnchor.identifier)
-                    anchorData["transform"] = "\(planeAnchor.transform)"
-                    anchorData["center"] = "\(planeAnchor.center)"
-                    anchorData["extent"] = "\(planeAnchor.extent)"
-                    anchors.append(anchorData)
-                 default:
-                   anchorData["type"] = "ARAnchor"
-                   anchorData["uuid"] = String(describing: anchor.identifier)
-                   anchorData["transform"] = "\(anchor.transform)"
-                   anchors.append(anchorData)
-            }
-        }
-
         var ambientIntensity: Float = 1.0
 
         if let lightEstimate = frame.lightEstimate {
@@ -249,30 +304,33 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         // Store all data in dict, parse as json to send to the web view
         // floats and matrix strings need to be parsed client side
         var data = Dictionary<String, Any>()
-        data["matrixWorldInverse"] = "\(simd_inverse(frame.camera.transform))"
-        data["cameraTransform"] = "\(frame.camera.transform)"
-
-        // The projection matrix here matches the one in Renderer.swift
-        data["cameraProjection" ] = "\(frame.camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
-        data["anchors"] = anchors
+        data["camera"] = self.getCameraData(camera: frame.camera)
+        data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
         data["ambientIntensity"] = ambientIntensity
         //data["pointCloud"] = frame.rawFeaturePoints?.points
 
-        // Convert dic to json and send to the web view
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-
             let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
 
-            let fn = "onARFrame('\(jsonData)\')";
-            self.webView.evaluateJavaScript(fn, completionHandler: { (html: AnyObject?, error: NSError?) in
-                print(html!)
-            } as? (Any?, Error?) -> Void)
+            let api = "ARKit.onARFrame('\(jsonData)\')";
+            self.callClient(api: api);
         } catch {
          print("error serialising json")
         }
 
         renderer.update()
+    }
+    
+    /**
+     Call the WKWebView
+     
+     @param api The function containing any arguments. To keep things clean all methods are envoked through the 'ARKit' object on the window
+     */
+    func callClient(api: String) {
+        self.webView.evaluateJavaScript(api, completionHandler: { (html: AnyObject?, error: NSError?) in
+            print(html!)
+            } as? (Any?, Error?) -> Void)
     }
 
     /**
@@ -283,6 +341,18 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      */
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
         print("Anchors added")
+        var data = Dictionary<String, Any>()
+        data["anchors"] = self.getAnchorsData(anchors: anchors)
+        
+        do {
+            let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+            
+            let api = "ARKit.onAnchorsAdded('\(jsonData)')";
+            self.callClient(api: api)
+        } catch {
+            print("error serialising json")
+        }
     }
 
     /**
@@ -304,17 +374,33 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      */
     func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
         print("Anchors removed")
+        var data = Dictionary<String, Any>()
+        data["anchors"] = self.getAnchorsData(anchors: anchors)
+        
+        do {
+            let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+            
+            let api = "ARKit.onAnchorsRemoved('\(jsonData)')";
+            self.callClient(api: api)
+        } catch {
+            print("error serialising json")
+        }
     }
 
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
         // (If the user leaves the app)
         print("sessionWasInterrupted")
+        let api = "ARKit.onSessionInterupted()";
+        self.callClient(api: api)
     }
 
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         // When the user returns to the app
         print("sessionInterruptionEnded")
+        let api = "ARKit.onSessionInteruptedEnded()";
+        self.callClient(api: api)
     }
 }
