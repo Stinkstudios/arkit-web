@@ -168,7 +168,7 @@ class App {
       this.boxGeometry,
       new MeshLambertMaterial({
         color: 0xffffff * Math.random(),
-        wireframe: true
+        wireframe: false
       })
       // new MeshLambertMaterial({ color: 0xffffff, wireframe: true })
     );

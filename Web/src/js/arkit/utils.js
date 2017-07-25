@@ -86,17 +86,18 @@ export function ARAnchor(anchor) {
 export function ARHitTestResult(result) {
   result.localTransform = parseSimdFloat4x4(result.localTransform);
   result.worldTransform = parseSimdFloat4x4(result.worldTransform);
+
   switch (result.type) {
-    case ARHitTestResultType.FeaturePoint:
+    case ARHitTestResultType.featurePoint:
       break;
-    case ARHitTestResultType.HorizontalPlane:
+    case ARHitTestResultType.horizontalPlane:
       break;
-    case ARHitTestResultType.VerticalPlane:
+    case ARHitTestResultType.verticalPlane:
       break;
-    case ARHitTestResultType.ExistingPlane:
+    case ARHitTestResultType.existingPlane:
       result.anchor = ARAnchor(result.anchor);
       break;
-    case ARHitTestResultType.ExistingPlaneUsingExtent:
+    case ARHitTestResultType.existingPlaneUsingExtent:
       result.anchor = ARAnchor(result.anchor);
       break;
     default:
