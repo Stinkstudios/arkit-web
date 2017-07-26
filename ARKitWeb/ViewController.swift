@@ -33,7 +33,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         // Set the view's delegate
         session = ARSession()
         session.delegate = self
-
+        
         // Set the view to use the default device
         if let view = self.view as? MTKView {
             view.device = MTLCreateSystemDefaultDevice()
@@ -71,7 +71,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                     webView.load(URLRequest(url: URL(fileURLWithPath: path)))
                 }
             }
-
+            
             guard view.device != nil else {
                 print("Metal is not supported on this device")
                 return
@@ -82,6 +82,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             renderer.drawRectResized(size: view.bounds.size)
         }
+    }
+    
+    // Hide the status bar
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
 
     override func viewWillAppear(_ animated: Bool) {
