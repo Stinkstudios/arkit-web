@@ -15,7 +15,7 @@ A starter kit for using ARKit with WebGL
 import ARKit from './arkit/arkit';
 
 /* Get latest frame data */
-ARKit.on('ARFrame', data => {});
+ARKit.on('frame', data => {});
 
 /* Subsribe to hit test result */
 ARKit.on('hitTest', data => {});
@@ -36,13 +36,15 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 * [ARLightEstimate](https://developer.apple.com/documentation/arkit/arlightestimate)
 * [ARHitTestResult](https://developer.apple.com/documentation/arkit/arhittestresult)
 * [ARSession remove(anchor:)](https://developer.apple.com/documentation/arkit/arsession/2865607-remove)
+* Camera feed as base64 to WebGL texture
 
 ## Todo
 
-* More seamless tracking? There's a slight delay between Metal and WebGL frames. [Related article](https://stackoverflow.com/questions/38382473/synchronize-rendering-between-native-opengl-and-webgl-in-wkwebview-ios).
-* Camera texture to WebGL
 * Object occlusion using a depth texture
 
+## Notes
+
+The tracking feels more native if the metal renderer isn't used. If your scene doesn't require the camera feed comment out `renderer.update()` in `ViewController.swift`.
 
 ## Resources
 

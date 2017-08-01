@@ -31,7 +31,7 @@ let kImagePlaneVertexData: [Float] = [
 ]
 
 
-class Renderer {
+class RendererDebug {
     let session: ARSession
     let device: MTLDevice
     let inFlightSemaphore = DispatchSemaphore(value: kMaxBuffersInFlight)

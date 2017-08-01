@@ -60,7 +60,6 @@ export function copyMatrix4Elements(matrix1, matrix2) {
 export function ARCamera(camera) {
   camera.transform = parseSimdFloat4x4(camera.transform);
   camera.projection = parseSimdFloat4x4(camera.projection);
-  camera.matrixWorldInverse = parseSimdFloat4x4(camera.matrixWorldInverse);
   return camera;
 }
 

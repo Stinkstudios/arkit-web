@@ -21,7 +21,7 @@ const ARKit = new class ARKitInterface {
       data.anchors[i] = ARAnchor(data.anchors[i]);
     }
 
-    this.emit('ARFrame', data);
+    this.emit('frame', data);
   }
 
   /**

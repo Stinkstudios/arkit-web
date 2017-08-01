@@ -1,12 +1,4 @@
-import {
-  Mesh,
-  BoxBufferGeometry,
-  MeshLambertMaterial,
-  Object3D,
-  PlaneBufferGeometry,
-  Matrix4,
-  DoubleSide
-} from 'three';
+import { Object3D } from 'three';
 import dat from 'dat-gui';
 import RenderStats from 'lib/render-stats';
 import stats from 'lib/stats';
@@ -19,6 +11,12 @@ import scene from './scene';
 import TouchControls from './touch-controls';
 import { SHOW_STATS } from './constants';
 import ARKit from './arkit/arkit';
+import ARKitVideoTexture from './arkit/video-texture';
+
+// Objects
+import Mirror from './objects/mirror';
+import ARAnchorCube from './objects/ar-anchor-cube';
+import ARAnchorPlane from './objects/ar-anchor-plane';
 
 class App {
   constructor() {
@@ -29,6 +27,8 @@ class App {
     Object.keys(lights).forEach(light => {
       scene.add(lights[light]);
     });
+
+    // scene.add(new AxisHelper());
 
     // Stats
     if (SHOW_STATS) {
@@ -58,19 +58,22 @@ class App {
 
     this.anchors = {};
 
-    // Use same geometry for all anchors
-    const size = 0.077;
-    this.boxGeometry = new BoxBufferGeometry(size, size, size);
+    this.videoTexture = new ARKitVideoTexture();
 
+    this._addObjects();
     this._bindListeners();
     this._onResize();
+  }
+
+  _addObjects() {
+    const mirror = new Mirror(scene, this.videoTexture); // eslint-disable-line no-unused-vars
   }
 
   _bindListeners() {
     window.addEventListener('resize', this._onResize, false);
     this.touchControls.on('end', this.onTouch);
 
-    ARKit.on('ARFrame', this.onARFrame);
+    ARKit.on('frame', this.onARFrame);
     ARKit.on('hitTest', this.onHitTest);
     ARKit.on('anchorsAdded', this.onAnchorsAdded);
     ARKit.on('anchorsRemoved', this.onAnchorsRemoved);
@@ -91,6 +94,14 @@ class App {
     const identifiers = Object.keys(this.anchors);
 
     ARKit.removeAnchors(identifiers);
+  };
+
+  recordStart = () => {
+    ARKit.recordStart();
+  };
+
+  recordStop = () => {
+    ARKit.recordStop();
   };
 
   onAnchorsAdded = data => {
@@ -124,6 +135,8 @@ class App {
   _update(data) {
     lights.ambient.intensity = data.ambientIntensity;
 
+    this.videoTexture.update(data.image);
+
     if (data.camera) {
       ARKitUtils.copyMatrix4Elements(
         cameraARParent.matrix,
@@ -132,10 +145,6 @@ class App {
       ARKitUtils.copyMatrix4Elements(
         cameraAR.projectionMatrix,
         data.camera.projection
-      );
-      ARKitUtils.copyMatrix4Elements(
-        cameraAR.matrixWorldInverse,
-        data.camera.matrixWorldInverse
       );
     }
 
@@ -164,16 +173,10 @@ class App {
 
     this.anchors[anchor.identifier] = new Object3D();
 
-    const mesh = new Mesh(
-      this.boxGeometry,
-      new MeshLambertMaterial({
-        color: 0xffffff * Math.random(),
-        wireframe: false
-      })
-      // new MeshLambertMaterial({ color: 0xffffff, wireframe: true })
-    );
+    // Returns a mesh instance
+    const cube = new ARAnchorCube();
 
-    this.anchors[anchor.identifier].add(mesh);
+    this.anchors[anchor.identifier].add(cube);
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
     ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.identifier].matrix,
@@ -188,20 +191,8 @@ class App {
 
     this.anchors[anchor.identifier] = new Object3D();
 
-    const geometry = new PlaneBufferGeometry(1, 1);
-    geometry.applyMatrix(new Matrix4().makeRotationX(Math.PI / 2));
-    const mesh = new Mesh(
-      geometry,
-      new MeshLambertMaterial({
-        color: 0x0000ff,
-        wireframe: true,
-        side: DoubleSide
-      })
-    );
-
-    mesh.position.fromArray(anchor.center);
-    mesh.scale.x = anchor.extent[0];
-    mesh.scale.z = anchor.extent[2];
+    // Returns a mesh instance
+    const mesh = new ARAnchorPlane(anchor);
 
     this.anchors[anchor.identifier].add(mesh);
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
@@ -225,9 +216,11 @@ class App {
       this.anchors[anchor.identifier].matrix,
       anchor.transform
     );
-    this.anchors[anchor.identifier].position.fromArray(anchor.center);
-    this.anchors[anchor.identifier].scale.x = anchor.extent[0];
-    this.anchors[anchor.identifier].scale.z = anchor.extent[2];
+    this.anchors[anchor.identifier].children[0].position.fromArray(
+      anchor.center
+    );
+    this.anchors[anchor.identifier].children[0].scale.x = anchor.extent[0];
+    this.anchors[anchor.identifier].children[0].scale.z = anchor.extent[2];
   }
 
   _render() {

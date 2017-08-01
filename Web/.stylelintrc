@@ -50,7 +50,6 @@
     "selector-class-pattern": "^((?:-{1,2}|_{2})?[a-z0-9]+(?:(?:-{1,2}|_{2})[a-z0-9]+)*)(?:-{1,2}|_{2})?$",
     "no-duplicate-selectors": true,
     "max-nesting-depth": 3,
-    "selector-no-id": true,
     "string-quotes": "single",
     "declaration-block-trailing-semicolon": "always",
     "no-eol-whitespace": true,

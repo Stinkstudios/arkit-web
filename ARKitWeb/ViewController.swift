@@ -17,8 +17,8 @@ extension MTKView : RenderDestinationProvider {
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
 
-    let DEBUG = false
-    let DEV_URL = "https://8570dbe5.ngrok.io"
+    let DEBUG = true
+    let DEV_URL = "https://08c31ae3.ngrok.io"
 
     var session: ARSession!
     var renderer: Renderer!
@@ -26,7 +26,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
     // The current viewport size
     var viewportSize: CGSize = CGSize()
-
+    
+    var imageUtil: ImageUtil!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,7 +41,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             view.device = MTLCreateSystemDefaultDevice()
             view.backgroundColor = UIColor.clear
             view.delegate = self
-
+            
             // Create web view
             let contentController = WKUserContentController();
 
@@ -82,6 +84,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             renderer.drawRectResized(size: view.bounds.size)
         }
+        
+        imageUtil = ImageUtil()
     }
     
     // Hide the status bar
@@ -158,7 +162,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["transform"] = "\(camera.transform)"
         // The projection matrix here matches the one in Renderer.swift
         data["projection" ] = "\(camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
-        data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))"
+//        data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))" // threejs calculates this automatically from the cameraAR parent
         return data
     }
     
@@ -284,6 +288,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
     // Called whenever the view needs to render
     func draw(in view: MTKView) {
+        renderer.update()
     }
 
     // MARK: - ARSessionDelegate
@@ -305,26 +310,24 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         if let lightEstimate = frame.lightEstimate {
             ambientIntensity = Float(lightEstimate.ambientIntensity) / 1000.0
         }
-
+        
         // Store all data in dict, parse as json to send to the web view
         // floats and matrix strings need to be parsed client side
         var data = Dictionary<String, Any>()
         data["camera"] = self.getCameraData(camera: frame.camera)
         data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
         data["ambientIntensity"] = ambientIntensity
-        //data["pointCloud"] = frame.rawFeaturePoints?.points
+        data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
 
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
-
+            
             let api = "ARKit.onARFrame('\(jsonData)\')";
             self.callClient(api: api);
         } catch {
          print("error serialising json")
         }
-
-        renderer.update()
     }
     
     /**
@@ -333,9 +336,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      @param api The function containing any arguments. To keep things clean all methods are envoked through the 'ARKit' object on the window
      */
     func callClient(api: String) {
-        self.webView.evaluateJavaScript(api, completionHandler: { (html: AnyObject?, error: NSError?) in
-            print(html!)
-            } as? (Any?, Error?) -> Void)
+        self.webView.evaluateJavaScript(api, completionHandler: nil)
     }
 
     /**
