@@ -58,3 +58,7 @@ Read the following on how to setup, run and debug.
 
 * https://developer.apple.com/documentation/arkit
 * [https://www.captechconsulting.com/blogs/arkit-fundamentals-in-ios-11](https://www.captechconsulting.com/blogs/arkit-fundamentals-in-ios-11)
+
+## License
+
+[MIT](LICENSE.md)
