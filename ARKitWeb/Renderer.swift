@@ -100,7 +100,6 @@ class Renderer {
                 renderEncoder.label = "MyRenderEncoder"
 
                 drawCapturedImage(renderEncoder: renderEncoder)
-                //drawAnchorGeometry(renderEncoder: renderEncoder)
 
                 // We're done encoding commands
                 renderEncoder.endEncoding()
