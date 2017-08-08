@@ -1,6 +1,3 @@
-import { Object3D, Camera } from 'three';
+import { Camera } from './arkit/camera';
 
 export const cameraAR = new Camera();
-export const cameraARParent = new Object3D();
-cameraARParent.matrixAutoUpdate = false;
-cameraARParent.add(cameraAR);
