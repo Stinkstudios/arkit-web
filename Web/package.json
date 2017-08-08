@@ -89,6 +89,7 @@
     "dotenv": "^4.0.0",
     "dotenv-webpack": "^1.5.4",
     "happens": "^0.6.0",
+    "husky": "^0.14.3",
     "postcss-automath": "^1.0.1",
     "postcss-import": "^10.0.0",
     "postcss-nested": "^2.1.0",
