@@ -13,8 +13,7 @@
     "build:css": "cross-env NODE_ENV=production node ./internals/postcss",
     "build:js": "cross-env NODE_ENV=production webpack --config webpack.config.js --colors;",
     "build:html": "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --out ../ARKitWeb/www",
-    "build:clean2": "rm -rf ../ARKitWeb/www/*",
-    "build:clean": "",
+    "build:clean": "rm -rf ../ARKitWeb/www/*",
     "assets": "mkdir public; cp -R ./assets/ ../ARKitWeb/www/assets;",
     "prettier": "prettier --write --single-quote --print-width 80 './src/js/**/*.js'",
     "prettier:internals": "prettier --write --single-quote --print-width 80 \"internals/**/*.js\"",
@@ -35,7 +34,7 @@
     "url": "https://github.com/Stinkstudios/component-arkit-web.git"
   },
   "author": "Amelie Rosser <amelierosser1986@gmail.com> (https://www.ixviii.io/)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Stinkstudios/component-arkit-web/issues"
   },
