@@ -21,7 +21,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     let DEV_URL = "https://08c31ae3.ngrok.io"
 
     var session: ARSession!
-    var renderer: Renderer!
+    var renderer: RendererDebug!
     var webView: WKWebView!
 
     // The current viewport size
@@ -80,7 +80,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             }
 
             // Configure the renderer to draw to the view
-            renderer = Renderer(session: session, metalDevice: view.device!, renderDestination: view)
+            renderer = RendererDebug(session: session, metalDevice: view.device!, renderDestination: view)
 
             renderer.drawRectResized(size: view.bounds.size)
         }
@@ -159,10 +159,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     
     func getCameraData(camera: ARCamera) -> Dictionary<String, Any> {
         var data = Dictionary<String, Any>()
-        data["transform"] = "\(camera.transform)"
+        // Uncomment if needed (make sure to parse the data in arkit/utils.js)
+        // data["transform"] = "\(camera.transform)" uncomment if needed
         // The projection matrix here matches the one in Renderer.swift
         data["projection" ] = "\(camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
-//        data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))" // threejs calculates this automatically from the cameraAR parent
+        data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))"
         return data
     }
     
@@ -317,7 +318,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["camera"] = self.getCameraData(camera: frame.camera)
         data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
         data["ambientIntensity"] = ambientIntensity
-        data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
+        //data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
 
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
