@@ -20,6 +20,11 @@ import ARAnchorPlane from './objects/ar-anchor-plane';
 
 class App {
   constructor() {
+    // UI
+    this.ui = {
+      interruptedOverlay: document.querySelector('.overlay-session-interupted')
+    };
+
     // Renderer
     document.body.appendChild(renderer.domElement);
 
@@ -75,6 +80,8 @@ class App {
     ARKit.on('hitTest', this.onHitTest);
     ARKit.on('anchorsAdded', this.onAnchorsAdded);
     ARKit.on('anchorsRemoved', this.onAnchorsRemoved);
+    ARKit.on('sessionInterupted', this.onSessionInterupted);
+    ARKit.on('sessionInteruptedEnded', this.onSessionInteruptedEnded);
   }
 
   onARFrame = data => {
@@ -94,14 +101,6 @@ class App {
     ARKit.removeAnchors(identifiers);
   };
 
-  recordStart = () => {
-    ARKit.recordStart();
-  };
-
-  recordStop = () => {
-    ARKit.recordStop();
-  };
-
   onAnchorsAdded = data => {
     console.log('onAnchorsAdded', data); // eslint-disable-line no-console
   };
@@ -112,6 +111,18 @@ class App {
         scene.remove(this.anchors[anchor.identifier]);
       }
     });
+  };
+
+  onSessionInterupted = () => {
+    this.ui.interruptedOverlay.classList.add(
+      'overlay-session-interrupted--active'
+    );
+  };
+
+  onSessionInteruptedEnded = () => {
+    this.ui.interruptedOverlay.classList.remove(
+      'overlay-session-interrupted--active'
+    );
   };
 
   onTouch = event => {
@@ -167,7 +178,7 @@ class App {
   }
 
   addMesh(anchor) {
-    console.log('adding', anchor.identifier); // eslint-disable-line
+    console.log("adding", anchor.identifier); // eslint-disable-line
 
     // Returns a mesh instance
     this.anchors[anchor.identifier] = new ARAnchorCube();
@@ -181,7 +192,7 @@ class App {
   }
 
   addPlaneMesh(anchor) {
-    console.log('adding', anchor.identifier); // eslint-disable-line
+    console.log("adding", anchor.identifier); // eslint-disable-line
 
     this.anchors[anchor.identifier] = new Object3D();
 
