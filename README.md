@@ -27,7 +27,7 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 ## Requirements
 
 * iOS11 (currently in beta and can be installed from [here](https://beta.apple.com/sp/betaprogram/))
-* A device which as A9 and A10 processors
+* A device which has A9 and A10 processors
 
 ## Implemented
 
