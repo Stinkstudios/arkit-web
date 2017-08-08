@@ -242,8 +242,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             data["results"] = results
 
             do {
-                let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-                let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+                let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+                let jsonData = NSString(data: json, encoding: String.Encoding.utf8.rawValue)!
 
                 let api = "ARKit.onHitTest('\(jsonData)\')";
                 self.callClient(api: api)
@@ -321,8 +321,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         //data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
 
         do {
-            let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-            let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+            let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let jsonData = NSString(data: json, encoding: String.Encoding.utf8.rawValue)!
 
             let api = "ARKit.onARFrame('\(jsonData)\')";
             self.callClient(api: api);
@@ -352,8 +352,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["anchors"] = self.getAnchorsData(anchors: anchors)
 
         do {
-            let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-            let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+            let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let jsonData = NSString(data: json, encoding: String.Encoding.utf8.rawValue)!
 
             let api = "ARKit.onAnchorsAdded('\(jsonData)')";
             self.callClient(api: api)
@@ -385,8 +385,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["anchors"] = self.getAnchorsData(anchors: anchors)
 
         do {
-            let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
-            let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
+            let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let jsonData = NSString(data: json, encoding: String.Encoding.utf8.rawValue)!
 
             let api = "ARKit.onAnchorsRemoved('\(jsonData)')";
             self.callClient(api: api)
