@@ -44,7 +44,8 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 
 ## Notes
 
-The tracking feels more native if the metal renderer isn't used. If your scene doesn't require the camera feed comment out `renderer.update()` in `ViewController.swift`.
+* Setting the pixel ratio to anything higher than 1 causes significant sync drops for the anchor tracking
+* The `matrixWorldInverse` is now set directly on the camera from the frame data. I had to duplicate three's base camera class `arkit/camera.js` as the `matrixWorldInverse` gets set in the `WebGLRenderer.js`
 
 ## Resources
 
