@@ -40,6 +40,48 @@ const ARKit = new class ARKitInterface {
   }
 
   /**
+   * The new anchors added
+   * @param  {Object} json
+   */
+  onAnchorsAdded(json) {
+    const data = JSON.parse(json);
+
+    for (let i = 0; i < data.anchors.length; i += 1) {
+      data.anchors[i] = ARAnchor(data.anchors[i]);
+    }
+
+    this.emit('anchorsAdded', data);
+  }
+
+  /**
+   * The anchors which have been removed
+   * @param  {Object} json
+   */
+  onAnchorsRemoved(json) {
+    const data = JSON.parse(json);
+
+    for (let i = 0; i < data.anchors.length; i += 1) {
+      data.anchors[i] = ARAnchor(data.anchors[i]);
+    }
+
+    this.emit('anchorsRemoved', data);
+  }
+
+  /**
+   * When the session has been interputed
+   */
+  onSessionInterupted() {
+    this.emit('sessionInterupted');
+  }
+
+  /**
+   * When the session interruption ends
+   */
+  onSessionInteruptedEnded() {
+    this.emit('sessionInteruptedEnded');
+  }
+
+  /**
    * Perform a hitTest
    *
    * Top left is 0,0 Bottom right is 1,1
@@ -60,34 +102,6 @@ const ARKit = new class ARKitInterface {
     this.postMessage(data);
   }
 
-  onAnchorsAdded(json) {
-    const data = JSON.parse(json);
-
-    for (let i = 0; i < data.anchors.length; i += 1) {
-      data.anchors[i] = ARAnchor(data.anchors[i]);
-    }
-
-    this.emit('anchorsAdded', data);
-  }
-
-  onAnchorsRemoved(json) {
-    const data = JSON.parse(json);
-
-    for (let i = 0; i < data.anchors.length; i += 1) {
-      data.anchors[i] = ARAnchor(data.anchors[i]);
-    }
-
-    this.emit('anchorsRemoved', data);
-  }
-
-  onSessionInterupted() {
-    this.emit('sessionInterupted');
-  }
-
-  onSessionInteruptedEnded() {
-    this.emit('sessionInteruptedEnded');
-  }
-
   /**
    * Add an anchor to the scene
    */
@@ -99,6 +113,10 @@ const ARKit = new class ARKitInterface {
     this.postMessage(data);
   }
 
+  /**
+   * Remove anchors from the scene
+   * @param {Array} a list of anchor identifiers
+   */
   removeAnchors(identifiers = []) {
     const data = {
       action: 'removeAnchors',
@@ -115,7 +133,7 @@ const ARKit = new class ARKitInterface {
     try {
       window.webkit.messageHandlers.callbackHandler.postMessage(data);
     } catch (err) {
-      console.log('The native context does not exist'); // eslint-disable-line
+      console.warn('Error posting to webkit callback handler'); // eslint-disable-line
     }
   }
 }();
