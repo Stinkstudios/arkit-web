@@ -4,17 +4,16 @@
   "description": "component-arkit-web",
   "scripts": {
     "start": "yarn run build:clean; concurrently 'yarn run assets' 'yarn run server' 'yarn run watch:css' 'yarn run watch:js' 'yarn run watch:html'",
-    "start:p": "yarn run build:clean; concurrently 'yarn run assets' 'yarn run server' 'yarn run build:css' 'yarn run build:js' 'yarn run build:html'",
     "server": "live-server ../ARKitWeb/www --port 3000 --quiet --watch ../ARKitWeb/www --watch ./src --wait 0",
     "watch:css": "cross-env NODE_ENV=development node ./internals/postcss -w",
     "watch:js": "cross-env NODE_ENV=development webpack --config webpack.config.js --colors --watch",
     "watch:html": "pug --watch ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
-    "build": "yarn run build:clean; mkdir ../ARKitWeb/www; yarn run assets; yarn run build:js; yarn run build:css; yarn run build:html;",
+    "build": "yarn run build:clean; yarn run assets; yarn run build:js; yarn run build:css; yarn run build:html;",
     "build:css": "cross-env NODE_ENV=production node ./internals/postcss",
     "build:js": "cross-env NODE_ENV=production webpack --config webpack.config.js --colors;",
-    "build:html": "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --out ../ARKitWeb/www",
+    "build:html": "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
     "build:clean": "rm -rf ../ARKitWeb/www/*",
-    "assets": "mkdir public; cp -R ./assets/ ../ARKitWeb/www/assets;",
+    "assets": "cp -R ./assets/ ../ARKitWeb/www/assets;",
     "prettier": "prettier --write --single-quote --print-width 80 './src/js/**/*.js'",
     "prettier:internals": "prettier --write --single-quote --print-width 80 \"internals/**/*.js\"",
     "stylefmt": "stylefmt --c .stylelintrc -r \"src/**/**/*.css\"",
@@ -48,8 +47,8 @@
     "babel-preset-stage-0": "^6.24.1",
     "babili-webpack-plugin": "^0.1.2",
     "concurrently": "^3.5.0",
-    "cross-env": "^5.0.1",
-    "eslint": "^4.3.0",
+    "cross-env": "^5.0.4",
+    "eslint": "^4.4.1",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.3.0",
     "eslint-import-resolver-babel-module": "^3.0.0",
@@ -80,8 +79,8 @@
     "stylefmt": "^6.0.0",
     "stylelint": "^8.0.0",
     "stylelint-order": "^0.6.0",
-    "stylelint-scss": "^2.0.0",
-    "webpack": "^3.4.1"
+    "stylelint-scss": "^2.0.1",
+    "webpack": "^3.5.1"
   },
   "dependencies": {
     "autoprefixer": "^7.1.2",
@@ -102,7 +101,6 @@
     "shelljs": "^0.7.8",
     "stats-js": "^1.0.0-alpha1",
     "three": "^0.86.0",
-    "ua-parser-js": "^0.7.14",
-    "uuid": "^3.1.0"
+    "ua-parser-js": "^0.7.14"
   }
 }
