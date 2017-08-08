@@ -6,7 +6,7 @@ A starter kit for using ARKit with WebGL
 
 * Metal rendering for Camera feed
 * threejs for WebGL content
-* Use ngrok for live development, local resouces for release
+* Use ngrok for live development, local resources for release
 * ARKit interface model for event subscription
 
 ## Example
@@ -46,6 +46,13 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 
 * Setting the pixel ratio to anything higher than 1 causes significant sync drops for the anchor tracking
 * The `matrixWorldInverse` is now set directly on the camera from the frame data. I had to duplicate three's base camera class `arkit/camera.js` as the `matrixWorldInverse` gets set in the `WebGLRenderer.js`
+
+## Running
+
+Read the following on how to setup, run and debug.
+
+* [ARKitWeb](ARKitWeb/README.md)
+* [Web](Web/README.md)
 
 ## Resources
 
