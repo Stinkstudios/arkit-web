@@ -9,11 +9,19 @@
   </head>
   <body>
     <main>
-      <script>
-        // While page loads
-        window.onARFrame = function() {}
-      </script>
+      <div class="overlay-session-interrupted">Session interrupted</div>
     </main>
+    <script>
+      // Define ARKit interface while js loads
+      window.ARKit = {
+        onARFrame: function() {},
+        onHitTest: function() {},
+        onAnchorsAdded: function() {},
+        onAnchorsRemoved: function() {},
+        onSessionInterupted: function() {},
+        onSessionInteruptedEnded: function() {}
+      };
+    </script>
     <script defer src="assets/js/main.js"></script>
   </body>
 </html>
