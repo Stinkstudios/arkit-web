@@ -36,9 +36,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, constants.BUILD),
     publicPath: process.env.BASE_URL || '/',
-    filename: production
-      ? `${constants.ASSETS}/${constants.JS}/[name].[chunkhash].js`
-      : `${constants.ASSETS}/${constants.JS}/[name].js`,
+    filename: `${constants.ASSETS}/${constants.JS}/[name].js`,
     chunkFilename: `${constants.ASSETS}/${constants.JS}/[name].[chunkhash].chunk.js`
   },
   module: {
