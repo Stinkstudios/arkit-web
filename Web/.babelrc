@@ -1,14 +1,17 @@
 {
-	 "presets": ["es2015", "stage-0"],
+  "presets": ["es2015", "stage-0"],
   "plugins": [
-    ["module-resolver", {
-      "root": ["./src/js"],
-      "alias": {
-							"config": "./config",
-        "lib": "./lib",
-        "templates": "./templates",
-								"utils": "./utils"
+    [
+      "module-resolver",
+      {
+        "root": ["./src/js"],
+        "alias": {
+          "config": "./config",
+          "lib": "./lib",
+          "templates": "./templates",
+          "utils": "./utils"
+        }
       }
-    }]
+    ]
   ]
 }
