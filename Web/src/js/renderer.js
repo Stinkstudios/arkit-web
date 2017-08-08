@@ -5,7 +5,8 @@ const renderer = new WebGLRenderer({
   alpha: true
 });
 
-renderer.setPixelRatio(window.devicePixelRatio);
+// window.devicePixelRatio 2 causes significant framerate drop
+// renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 export default renderer;
