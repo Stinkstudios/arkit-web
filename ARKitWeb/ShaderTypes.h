@@ -3,7 +3,7 @@
 //  ARKitWeb
 //
 //  Created by Amelie Rosser on 21/07/2017.
-//  Copyright © 2017 Amelie Rosser. All rights reserved.
+//  Copyright © 2017 Stink Studios. All rights reserved.
 //
 
 //
@@ -46,7 +46,7 @@ typedef struct {
     // Camera Uniforms
     matrix_float4x4 projectionMatrix;
     matrix_float4x4 viewMatrix;
-    
+
     // Lighting Properties
     vector_float3 ambientLightColor;
     vector_float3 directionalLightDirection;

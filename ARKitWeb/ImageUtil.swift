@@ -3,7 +3,7 @@
 //  ARKitWeb
 //
 //  Created by Amelie Rosser on 27/07/2017.
-//  Copyright © 2017 Amelie Rosser. All rights reserved.
+//  Copyright © 2017 Stink Studios. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +13,7 @@ import ARKit
 import WebKit
 
 class ImageUtil {
-    
+
     var context: CIContext = CIContext()
     var colorSpace: CGColorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
 //    var options: Dictionary<CFString, Any> = [ kCGImageDestinationLossyCompressionQuality: 0.5 ]
@@ -21,7 +21,7 @@ class ImageUtil {
     let scale: CGFloat = 0.25;
 
     // First attempt
-    
+
     func getImageFromSampleBuffer (pixelBuffer: CVPixelBuffer) -> UIImage? {
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let resizedCIImage = ciImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
@@ -41,9 +41,9 @@ class ImageUtil {
         }
         return ""
     }
-    
+
     //    Second attempt - works but throws an error :/
-    
+
 //    func getImageData(pixelBuffer: CVPixelBuffer) -> String {
 //        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 //

@@ -3,7 +3,7 @@
 //  ARKitWeb
 //
 //  Created by Amelie Rosser on 21/07/2017.
-//  Copyright © 2017 Amelie Rosser. All rights reserved.
+//  Copyright © 2017 Stink Studios. All rights reserved.
 //
 
 import UIKit
@@ -26,22 +26,22 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
     // The current viewport size
     var viewportSize: CGSize = CGSize()
-    
+
     var imageUtil: ImageUtil!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Set the view's delegate
         session = ARSession()
         session.delegate = self
-        
+
         // Set the view to use the default device
         if let view = self.view as? MTKView {
             view.device = MTLCreateSystemDefaultDevice()
             view.backgroundColor = UIColor.clear
             view.delegate = self
-            
+
             // Create web view
             let contentController = WKUserContentController();
 
@@ -73,7 +73,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                     webView.load(URLRequest(url: URL(fileURLWithPath: path)))
                 }
             }
-            
+
             guard view.device != nil else {
                 print("Metal is not supported on this device")
                 return
@@ -84,10 +84,10 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             renderer.drawRectResized(size: view.bounds.size)
         }
-        
+
         imageUtil = ImageUtil()
     }
-    
+
     // Hide the status bar
     override var prefersStatusBarHidden: Bool {
         return true
@@ -140,11 +140,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             session.add(anchor: anchor)
         }
     }
-    
+
     func removeAnchors(identifiers: [NSString]) {
         print("removeAnchors")
         print(identifiers)
-        
+
         if let currentFrame = session.currentFrame {
             for (_, anchor) in currentFrame.anchors.enumerated() {
                 for (_, identifier) in identifiers.enumerated() {
@@ -156,7 +156,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             }
         }
     }
-    
+
     func getCameraData(camera: ARCamera) -> Dictionary<String, Any> {
         var data = Dictionary<String, Any>()
         // Uncomment if needed (make sure to parse the data in arkit/utils.js)
@@ -166,7 +166,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))"
         return data
     }
-    
+
     func getAnchorData(anchor: ARAnchor) -> Dictionary<String, Any> {
         var data = Dictionary<String, Any>()
         data["type"] = "ARAnchor"
@@ -174,7 +174,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["transform"] = "\(anchor.transform)"
         return data
     }
-    
+
     func getAnchorPlaneData(anchor: ARPlaneAnchor) -> Dictionary<String, Any> {
         var data = Dictionary<String, Any>()
         data["type"] = "ARPlaneAnchor"
@@ -184,7 +184,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["extent"] = "\(anchor.extent)"
         return data
     }
-    
+
     func getAnchorsData(anchors: [ARAnchor]) -> [Any] {
         var data = [Any]()
         for (_, anchor) in anchors.enumerated() {
@@ -197,23 +197,23 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         }
         return data
     }
-    
+
     /**
      Perform a hitTest
-     
+
      Reference: https://developer.apple.com/documentation/arkit/arframe/2875718-hittest
      */
     func hitTest(point: CGPoint, hitType: NSNumber) {
         if let currentFrame = session.currentFrame {
             let hitTestResults = currentFrame.hitTest(point, types: ARHitTestResult.ResultType(rawValue: ARHitTestResult.ResultType.RawValue(truncating: hitType)))
-            
+
             var data = Dictionary<String, Any>()
             var results = [Any]()
-            
+
             for (_, result) in hitTestResults.enumerated() {
                 var hitTest = Dictionary<String, Any>()
                 hitTest["type"] = result.type.rawValue
-                
+
                 switch(result.type) {
                     case ARHitTestResult.ResultType.featurePoint:
                         hitTest["localTransform"] = "\(result.localTransform)"
@@ -235,10 +235,10 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                     default:
                         break
                 }
-                
+
                 results.append(hitTest)
             }
-            
+
             data["results"] = results
 
             do {
@@ -251,17 +251,17 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                 print("error serialising json")
             }
         }
-        
+
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         // Handle message callbacks from javascript
         if(message.name == "callbackHandler") {
-            
+
             // We send an object from the client, we receive it as a NSDictionary
             let data = message.body as! NSDictionary
             let action = data["action"] as! String
-            
+
             switch(action) {
                 case "addAnchor":
                     self.addAnchor()
@@ -311,7 +311,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         if let lightEstimate = frame.lightEstimate {
             ambientIntensity = Float(lightEstimate.ambientIntensity) / 1000.0
         }
-        
+
         // Store all data in dict, parse as json to send to the web view
         // floats and matrix strings need to be parsed client side
         var data = Dictionary<String, Any>()
@@ -323,17 +323,17 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
-            
+
             let api = "ARKit.onARFrame('\(jsonData)\')";
             self.callClient(api: api);
         } catch {
          print("error serialising json")
         }
     }
-    
+
     /**
      Call the WKWebView
-     
+
      @param api The function containing any arguments. To keep things clean all methods are envoked through the 'ARKit' object on the window
      */
     func callClient(api: String) {
@@ -350,11 +350,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         print("Anchors added")
         var data = Dictionary<String, Any>()
         data["anchors"] = self.getAnchorsData(anchors: anchors)
-        
+
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
-            
+
             let api = "ARKit.onAnchorsAdded('\(jsonData)')";
             self.callClient(api: api)
         } catch {
@@ -383,11 +383,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         print("Anchors removed")
         var data = Dictionary<String, Any>()
         data["anchors"] = self.getAnchorsData(anchors: anchors)
-        
+
         do {
             let allInfoJSON = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             let jsonData = NSString(data: allInfoJSON, encoding: String.Encoding.utf8.rawValue)!
-            
+
             let api = "ARKit.onAnchorsRemoved('\(jsonData)')";
             self.callClient(api: api)
         } catch {

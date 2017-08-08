@@ -3,7 +3,7 @@
 //  sss
 //
 //  Created by Amelie Rosser on 04/08/2017.
-//  Copyright © 2017 Amelie Rosser. All rights reserved.
+//  Copyright © 2017 Stink Studios. All rights reserved.
 //
 
 import Foundation
@@ -396,7 +396,7 @@ class RendererDebug {
 
         for index in 0..<anchorInstanceCount {
             let anchor = frame.anchors[index + anchorOffset]
-            
+
             switch anchor {
                 // don't add a cube if the anchor is an ARPlaneAnchor
                 case _ as ARPlaneAnchor:

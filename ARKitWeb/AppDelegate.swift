@@ -3,7 +3,7 @@
 //  ARKitWeb
 //
 //  Created by Amelie Rosser on 21/07/2017.
-//  Copyright © 2017 Amelie Rosser. All rights reserved.
+//  Copyright © 2017 Stink Studios. All rights reserved.
 //
 
 import UIKit
@@ -43,4 +43,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-
