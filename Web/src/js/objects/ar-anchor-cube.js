@@ -1,7 +1,7 @@
 import { BoxBufferGeometry, Mesh, MeshLambertMaterial } from 'three';
 
 // Use same geometry for all cubes
-const size = 0.077;
+const size = 0.075;
 const geometry = new BoxBufferGeometry(size, size, size);
 
 export default class ARAnchorCube {
@@ -10,7 +10,7 @@ export default class ARAnchorCube {
       geometry,
       new MeshLambertMaterial({
         color: 0xffffff * Math.random(),
-        wireframe: false
+        wireframe: true
       })
     );
     return mesh;
