@@ -9,3 +9,20 @@ body {
   color: white;
   background-color: transparent;
 }
+
+.overlay-session-interrupted {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.overlay-session-interrupted--active {
+  display: flex;
+}
