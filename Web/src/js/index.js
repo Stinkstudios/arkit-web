@@ -5,7 +5,7 @@ import stats from 'lib/stats';
 import * as ARKitUtils from 'arkit/utils';
 import { ARHitTestResults, ARHitTestResultType } from 'arkit/constants';
 import lights from './lights';
-import { cameraARParent, cameraAR } from './cameras';
+import { cameraAR } from './cameras';
 import renderer from './renderer';
 import scene from './scene';
 import TouchControls from './touch-controls';
@@ -14,7 +14,7 @@ import ARKit from './arkit/arkit';
 import ARKitVideoTexture from './arkit/video-texture';
 
 // Objects
-import Mirror from './objects/mirror';
+// import Mirror from './objects/mirror';
 import ARAnchorCube from './objects/ar-anchor-cube';
 import ARAnchorPlane from './objects/ar-anchor-plane';
 
@@ -43,8 +43,6 @@ class App {
     // Controls
     this.touchControls = new TouchControls(renderer.domElement);
 
-    scene.add(cameraARParent);
-
     // Gui
     const actions = ['addAnchor', 'hitTest'];
     this.action = actions[0];
@@ -66,7 +64,7 @@ class App {
   }
 
   _addObjects() {
-    const mirror = new Mirror(scene, this.videoTexture); // eslint-disable-line no-unused-vars
+    // const mirror = new Mirror(scene, this.videoTexture); // eslint-disable-line no-unused-vars
   }
 
   _bindListeners() {
@@ -135,12 +133,12 @@ class App {
   _update(data) {
     lights.ambient.intensity = data.ambientIntensity;
 
-    this.videoTexture.update(data.image);
+    // this.videoTexture.update(data.image);
 
     if (data.camera) {
       ARKitUtils.copyMatrix4Elements(
-        cameraARParent.matrix,
-        data.camera.transform
+        cameraAR.matrixWorldInverse,
+        data.camera.matrixWorldInverse
       );
       ARKitUtils.copyMatrix4Elements(
         cameraAR.projectionMatrix,
@@ -171,12 +169,8 @@ class App {
   addMesh(anchor) {
     console.log('adding', anchor.identifier); // eslint-disable-line
 
-    this.anchors[anchor.identifier] = new Object3D();
-
     // Returns a mesh instance
-    const cube = new ARAnchorCube();
-
-    this.anchors[anchor.identifier].add(cube);
+    this.anchors[anchor.identifier] = new ARAnchorCube();
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
     ARKitUtils.copyMatrix4Elements(
       this.anchors[anchor.identifier].matrix,
