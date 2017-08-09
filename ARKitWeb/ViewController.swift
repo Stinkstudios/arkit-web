@@ -18,7 +18,6 @@ extension MTKView : RenderDestinationProvider {
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
 
     let DEBUG = true
-    let DEV_URL = "https://08c31ae3.ngrok.io"
 
     var session: ARSession!
     var renderer: RendererDebug!
@@ -66,6 +65,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             // Use ngrok for live reload developing
             if (DEBUG) {
+                
+                let DEV_URL = Bundle.main.infoDictionary!["DEV_URL"] as! String
+                
                 let url = URL(string: DEV_URL)!
                 webView.load(URLRequest(url: url))
             } else {
