@@ -2,8 +2,6 @@
 
 This demo features realtime shadows. Touch and drag on the screen to change the light position.
 
-## Running this demo
-
 Refer to the [installation instructions](../../../../README.md#installation) before running this demo.
 
 1. Open your terminal and run `yarn start` and `yarn tunnel` from the `component-arkit-web/Web` directory
