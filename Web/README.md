@@ -1,8 +1,12 @@
 # Web
 
-The WebGL content for rendering the AR scene.
-
 The setup is fairly minimal to allow you the developer to use your prefered WebGL authoring approach.
+
+## Installation
+
+1. Open your terminal and navigate to the `component-arkit-web/Web` directory
+2. If you don't have `yarn` globally run `npm i yarn --global`
+3. Install the project dependencies by running `yarn`
 
 ## Tasks
 
@@ -11,9 +15,11 @@ The setup is fairly minimal to allow you the developer to use your prefered WebG
 
 Check package.json for the rest
 
-## Running
+## Demos
 
-Once you've ran `yarn tunnel` copy the `https` url from your terminal console and update `DEV_URL` in `ViewController.swift`
+* [Anchors](src/js/demos/index/README.md)
+* [Shadows](src/js/demos/shadows/README.md)
+* [Bubbles](src/js/demos/bubbles/README.md)
 
 ## Debugging
 

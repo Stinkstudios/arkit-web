@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
@@ -30,8 +31,28 @@ plugins = plugins.concat([
   })
 ]);
 
+function isDir(dir) {
+  return fs.statSync(path.join('./src/js/demos', dir)).isDirectory();
+}
+const dirs = fs.readdirSync('./src/js/demos').filter(isDir);
+
+const entries = {};
+
+// To make developing an example faster
+// set the env variable EXAMPLE e.g:
+// EXAMPLE=linegeometry npm run start
+const demoDir = process.env.DEMO;
+
+if (demoDir !== undefined) {
+  entries[demoDir] = `./src/js/demos/${demoDir}/index.js`;
+} else {
+  dirs.forEach(dir => {
+    entries[dir] = `./src/js/demos/${dir}/index.js`;
+  });
+}
+
 module.exports = {
-  entry: path.join(__dirname, 'src/js/index'),
+  entry: entries,
   devtool: production ? '' : 'source-map',
   output: {
     path: path.join(__dirname, constants.BUILD),

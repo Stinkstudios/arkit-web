@@ -1,5 +1,6 @@
 export const ARPlaneAnchor = 'ARPlaneAnchor';
 export const ARAnchor = 'ARAnchor';
+export const IS_NATIVE = window.webkit !== undefined;
 
 // https://developer.apple.com/documentation/arkit/arhittestresult.resulttype
 const featurePoint = 'featurePoint';

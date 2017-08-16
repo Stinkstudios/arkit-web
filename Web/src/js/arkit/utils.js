@@ -30,10 +30,10 @@ export function parseFloat3(str) {
 }
 
 /**
- * copyMatrix4Elements
+ * copyMatrix4
  * @param  {String} Copy the parsed parseSimdFloat4x4 into threejs' matrix 4
  */
-export function copyMatrix4Elements(matrix1, matrix2) {
+export function copyMatrix4(matrix1, matrix2) {
   matrix1.elements[0] = matrix2[0][0];
   matrix1.elements[1] = matrix2[0][1];
   matrix1.elements[2] = matrix2[0][2];
@@ -59,7 +59,7 @@ export function copyMatrix4Elements(matrix1, matrix2) {
  */
 export function ARCamera(camera) {
   // Uncomment if needed (make sure to set the data in ViewController.swift)
-  // camera.transform = parseSimdFloat4x4(camera.transform);
+  camera.transform = parseSimdFloat4x4(camera.transform);
   camera.projection = parseSimdFloat4x4(camera.projection);
   camera.matrixWorldInverse = parseSimdFloat4x4(camera.matrixWorldInverse);
   return camera;

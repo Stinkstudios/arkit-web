@@ -363,7 +363,7 @@ class RendererDebug {
         let uniforms = sharedUniformBufferAddress.assumingMemoryBound(to: SharedUniforms.self)
 
         uniforms.pointee.viewMatrix = simd_inverse(frame.camera.transform)
-        uniforms.pointee.projectionMatrix = frame.camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000)
+        uniforms.pointee.projectionMatrix = frame.camera.projectionMatrix(for: .landscapeRight, viewportSize: viewportSize, zNear: 0.001, zFar: 1000)
 
         // Set up lighting for the scene using the ambient intensity if provided
         var ambientIntensity: Float = 1.0
@@ -442,7 +442,7 @@ class RendererDebug {
 
     func updateImagePlane(frame: ARFrame) {
         // Update the texture coordinates of our image plane to aspect fill the viewport
-        let displayToCameraTransform = frame.displayTransform(withViewportSize: viewportSize, orientation: .landscapeRight).inverted()
+        let displayToCameraTransform = frame.displayTransform(for: .landscapeRight, viewportSize: viewportSize).inverted()
 
         let vertexData = imagePlaneVertexBuffer.contents().assumingMemoryBound(to: Float.self)
         for index in 0...3 {

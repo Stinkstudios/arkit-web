@@ -16,8 +16,9 @@ extension MTKView : RenderDestinationProvider {
 }
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
-
+    
     let DEBUG = true
+    let IMAGE_DATA = false
 
     var session: ARSession!
     var renderer: RendererDebug!
@@ -65,9 +66,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
             // Use ngrok for live reload developing
             if (DEBUG) {
-                
+
                 let DEV_URL = Bundle.main.infoDictionary!["DEV_URL"] as! String
-                
+
                 let url = URL(string: DEV_URL)!
                 webView.load(URLRequest(url: url))
             } else {
@@ -100,7 +101,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
         // Create a session configuration
         // Reference: https://developer.apple.com/documentation/arkit/arworldtrackingsessionconfiguration
-        let configuration = ARWorldTrackingSessionConfiguration()
+        let configuration = ARWorldTrackingConfiguration()
         configuration.worldAlignment = .gravity
         configuration.planeDetection = .horizontal
 
@@ -127,7 +128,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      Reference: https://developer.apple.com/documentation/arkit/aranchor
      */
     func addAnchor() {
-        if (!ARWorldTrackingSessionConfiguration.isSupported) { return }
+        if (!ARWorldTrackingConfiguration.isSupported) { return }
         if let currentFrame = session.currentFrame {
             // Create a transform with a translation of 0.2 meters in front of the camera
             var translation = matrix_identity_float4x4
@@ -162,9 +163,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     func getCameraData(camera: ARCamera) -> Dictionary<String, Any> {
         var data = Dictionary<String, Any>()
         // Uncomment if needed (make sure to parse the data in arkit/utils.js)
-        // data["transform"] = "\(camera.transform)" uncomment if needed
+        data["transform"] = "\(camera.transform)"
         // The projection matrix here matches the one in Renderer.swift
-        data["projection" ] = "\(camera.projectionMatrix(withViewportSize: viewportSize, orientation: .landscapeRight, zNear: 0.001, zFar: 1000))"
+        data["projection" ] = "\(camera.projectionMatrix(for: .landscapeRight, viewportSize: viewportSize, zNear: 0.001, zFar: 1000))"
         data["matrixWorldInverse"] = "\(simd_inverse(camera.transform))"
         return data
     }
@@ -320,7 +321,10 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["camera"] = self.getCameraData(camera: frame.camera)
         data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
         data["ambientIntensity"] = ambientIntensity
-        //data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
+
+        if (IMAGE_DATA) {
+            data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
+        }
 
         do {
             let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))

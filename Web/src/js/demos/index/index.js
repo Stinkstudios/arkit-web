@@ -1,39 +1,61 @@
-import { Object3D } from 'three';
+import {
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  Object3D,
+  Vector3,
+  GridHelper,
+  AxisHelper
+} from 'three';
 import dat from 'dat-gui';
-import RenderStats from 'lib/render-stats';
-import stats from 'lib/stats';
-import * as ARKitUtils from 'arkit/utils';
-import { ARHitTestResults, ARHitTestResultType } from 'arkit/constants';
+import OrbitControls from '../../lib/OrbitControls';
+import ARKit from '../../arkit/arkit';
+import ARCamera from '../../arkit/camera';
+import * as ARKitUtils from '../../arkit/utils';
+import ARAnchorCube from '../../arkit/objects/anchor-cube';
+import ARAnchorPlane from '../../arkit/objects/anchor-plane';
+import { IS_NATIVE } from '../../arkit/constants';
+import RenderStats from '../../lib/render-stats';
+import stats from '../../lib/stats';
+import TouchControls from '../../lib/touch-controls';
 import lights from './lights';
-import { cameraAR } from './cameras';
-import renderer from './renderer';
-import scene from './scene';
-import TouchControls from './touch-controls';
-import { SHOW_STATS } from './constants';
-import ARKit from './arkit/arkit';
-import ARKitVideoTexture from './arkit/video-texture';
 
-// Objects
-// import Mirror from './objects/mirror';
-import ARAnchorCube from './objects/ar-anchor-cube';
-import ARAnchorPlane from './objects/ar-anchor-plane';
+const SHOW_STATS = true;
 
 class App {
   constructor() {
+    // Renderer
+    this.renderer = new WebGLRenderer({
+      alpha: true
+    });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(this.renderer.domElement);
+
+    // Scene
+    this.scene = new Scene();
+
+    // Cameras
+    const fov = 70;
+    const ratio = window.innerWidth / window.innerHeight;
+    const near = 0.1;
+    const far = 1000;
+    const zoom = 10;
+    this.cameras = {
+      dev: new PerspectiveCamera(fov, ratio, near, far),
+      ar: new ARCamera()
+    };
+    this.cameras.dev.position.set(1 * zoom, 0.75 * zoom, 1 * zoom);
+    this.cameras.dev.lookAt(new Vector3());
+
     // UI
     this.ui = {
       interruptedOverlay: document.querySelector('.overlay-session-interupted')
     };
 
-    // Renderer
-    document.body.appendChild(renderer.domElement);
-
     // Lights
     Object.keys(lights).forEach(light => {
-      scene.add(lights[light]);
+      this.scene.add(lights[light]);
     });
-
-    // scene.add(new AxisHelper());
 
     // Stats
     if (SHOW_STATS) {
@@ -46,51 +68,56 @@ class App {
     }
 
     // Controls
-    this.touchControls = new TouchControls(renderer.domElement);
+    this.touchControls = new TouchControls(this.renderer.domElement);
 
     // Gui
-    const actions = ['addAnchor', 'hitTest'];
-    this.action = actions[0];
-    this.hitTestType = ARHitTestResults[0];
     this.totalAnchors = 0;
     this.gui = new dat.GUI();
-    this.gui.add(this, 'action', actions);
-    this.gui.add(this, 'hitTestType', ARHitTestResults);
     this.gui.add(this, 'totalAnchors').listen();
     this.gui.add(this, 'removeAnchors');
 
+    // Map of anchors
+    // identifier is the key
     this.anchors = {};
 
-    this.videoTexture = new ARKitVideoTexture();
+    this.bindListeners();
+    this.onResize();
 
-    this._addObjects();
-    this._bindListeners();
-    this._onResize();
+    if (!IS_NATIVE) {
+      this.orbitControls = new OrbitControls(
+        this.cameras.dev,
+        this.renderer.domElement
+      );
+      this.scene.add(new GridHelper());
+      this.scene.add(new AxisHelper());
+      this.renderDev();
+    }
   }
 
-  _addObjects() {
-    // const mirror = new Mirror(scene, this.videoTexture); // eslint-disable-line no-unused-vars
-  }
-
-  _bindListeners() {
-    window.addEventListener('resize', this._onResize, false);
+  bindListeners() {
+    window.addEventListener('resize', this.onResize, false);
     this.touchControls.on('end', this.onTouch);
 
     ARKit.on('frame', this.onARFrame);
-    ARKit.on('hitTest', this.onHitTest);
-    ARKit.on('anchorsAdded', this.onAnchorsAdded);
-    ARKit.on('anchorsRemoved', this.onAnchorsRemoved);
-    ARKit.on('sessionInterupted', this.onSessionInterupted);
-    ARKit.on('sessionInteruptedEnded', this.onSessionInteruptedEnded);
+    ARKit.on('anchorsAdded', this.onARAnchorsAdded);
+    ARKit.on('anchorsRemoved', this.onARAnchorsRemoved);
+    ARKit.on('sessionInterupted', this.onARSessionInterupted);
+    ARKit.on('sessionInteruptedEnded', this.onARSessionInteruptedEnded);
   }
 
   onARFrame = data => {
-    this._update(data);
-    this._render();
-  };
+    if (SHOW_STATS) {
+      stats.begin();
+    }
 
-  onHitTest = data => {
-    console.log('onHitTest', data); // eslint-disable-line no-console
+    this.update(data);
+
+    this.renderer.render(this.scene, this.cameras.ar);
+
+    if (SHOW_STATS) {
+      this._renderStats.update(this.renderer);
+      stats.end();
+    }
   };
 
   removeAnchors = () => {
@@ -101,58 +128,44 @@ class App {
     ARKit.removeAnchors(identifiers);
   };
 
-  onAnchorsAdded = data => {
+  onARAnchorsAdded = data => {
     console.log('onAnchorsAdded', data); // eslint-disable-line no-console
   };
 
-  onAnchorsRemoved = data => {
+  onARAnchorsRemoved = data => {
     data.anchors.forEach(anchor => {
       if (this.anchors[anchor.identifier]) {
-        scene.remove(this.anchors[anchor.identifier]);
+        this.scene.remove(this.anchors[anchor.identifier]);
       }
     });
   };
 
-  onSessionInterupted = () => {
+  onARSessionInterupted = () => {
     this.ui.interruptedOverlay.classList.add(
       'overlay-session-interrupted--active'
     );
   };
 
-  onSessionInteruptedEnded = () => {
+  onARSessionInteruptedEnded = () => {
     this.ui.interruptedOverlay.classList.remove(
       'overlay-session-interrupted--active'
     );
   };
 
-  onTouch = event => {
-    switch (this.action) {
-      case 'addAnchor':
-        ARKit.addAnchor();
-        break;
-      case 'hitTest':
-        ARKit.hitTest(
-          event[0].x,
-          event[0].y,
-          ARHitTestResultType.existingPlaneUsingExtent
-        );
-        break;
-      default:
-    }
+  onTouch = () => {
+    ARKit.addAnchor();
   };
 
-  _update(data) {
+  update(data) {
     lights.ambient.intensity = data.ambientIntensity;
 
-    // this.videoTexture.update(data.image);
-
     if (data.camera) {
-      ARKitUtils.copyMatrix4Elements(
-        cameraAR.matrixWorldInverse,
+      ARKitUtils.copyMatrix4(
+        this.cameras.ar.matrixWorldInverse,
         data.camera.matrixWorldInverse
       );
-      ARKitUtils.copyMatrix4Elements(
-        cameraAR.projectionMatrix,
+      ARKitUtils.copyMatrix4(
+        this.cameras.ar.projectionMatrix,
         data.camera.projection
       );
     }
@@ -183,12 +196,12 @@ class App {
     // Returns a mesh instance
     this.anchors[anchor.identifier] = new ARAnchorCube();
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
-    ARKitUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4(
       this.anchors[anchor.identifier].matrix,
       anchor.transform
     );
 
-    scene.add(this.anchors[anchor.identifier]);
+    this.scene.add(this.anchors[anchor.identifier]);
   }
 
   addPlaneMesh(anchor) {
@@ -201,23 +214,23 @@ class App {
 
     this.anchors[anchor.identifier].add(mesh);
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
-    ARKitUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4(
       this.anchors[anchor.identifier].matrix,
       anchor.transform
     );
 
-    scene.add(this.anchors[anchor.identifier]);
+    this.scene.add(this.anchors[anchor.identifier]);
   }
 
   updateMesh(anchor) {
-    ARKitUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4(
       this.anchors[anchor.identifier].matrix,
       anchor.transform
     );
   }
 
   updatePlaneMesh(anchor) {
-    ARKitUtils.copyMatrix4Elements(
+    ARKitUtils.copyMatrix4(
       this.anchors[anchor.identifier].matrix,
       anchor.transform
     );
@@ -228,21 +241,24 @@ class App {
     this.anchors[anchor.identifier].children[0].scale.z = anchor.extent[2];
   }
 
-  _render() {
+  renderDev = () => {
+    requestAnimationFrame(this.renderDev);
     if (SHOW_STATS) {
       stats.begin();
     }
 
-    renderer.render(scene, cameraAR);
+    this.renderer.render(this.scene, this.cameras.dev);
 
     if (SHOW_STATS) {
-      this._renderStats.update(renderer);
+      this._renderStats.update(this.renderer);
       stats.end();
     }
-  }
+  };
 
-  _onResize = () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  onResize = () => {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.cameras.dev.ratio = window.innerWidth / window.innerHeight;
+    this.cameras.dev.updateProjectionMatrix();
   };
 }
 

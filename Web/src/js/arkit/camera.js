@@ -7,7 +7,7 @@
 
 import { Matrix4, Quaternion, Object3D, Vector3 } from 'three';
 
-function Camera() {
+function ARCamera() {
   Object3D.call(this);
 
   this.type = 'Camera';
@@ -16,8 +16,8 @@ function Camera() {
   this.projectionMatrix = new Matrix4();
 }
 
-Camera.prototype = Object.assign(Object.create(Object3D.prototype), {
-  constructor: Camera,
+ARCamera.prototype = Object.assign(Object.create(Object3D.prototype), {
+  constructor: ARCamera,
 
   isCamera: true,
 
@@ -56,4 +56,4 @@ Camera.prototype = Object.assign(Object.create(Object3D.prototype), {
   }
 });
 
-export { Camera };
+export default ARCamera;

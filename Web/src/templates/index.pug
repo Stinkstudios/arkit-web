@@ -1,23 +1,4 @@
-doctype html
-html
-  head
-    meta(charset='utf-8')
-    meta(http-equiv="x-ua-compatible" content="ie=edge")
-    title #{meta.title}
-    meta(name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0")
-    link(rel='stylesheet', href=`${baseUrl}assets/css/${cssFile}`)
-  body
-    main
-      .overlay-session-interrupted
-        | Session interrupted
-    script.
-      // Define ARKit interface while js loads
-      window.ARKit = {
-        onARFrame: function() {},
-        onHitTest: function() {},
-        onAnchorsAdded: function() {},
-        onAnchorsRemoved: function() {},
-        onSessionInterupted: function() {},
-        onSessionInteruptedEnded: function() {}
-      };
-    script(defer src=`${baseUrl}assets/js/${jsFile}`)
+extends layout/page
+
+block content
+  script(defer src=`${baseUrl}assets/js/index.js`)

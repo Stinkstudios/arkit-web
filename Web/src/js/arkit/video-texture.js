@@ -1,6 +1,6 @@
 import { Texture } from 'three';
 
-export default class ARKitVideoTexture {
+export default class ARVideoTexture {
   constructor(size = 512) {
     this.image = new Image();
     this.canvas = document.createElement('canvas');

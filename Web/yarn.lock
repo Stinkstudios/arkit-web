@@ -2225,13 +2225,6 @@ eslint-config-prettier@^2.3.0:
   dependencies:
     get-stdin "^5.0.1"
 
-eslint-import-resolver-babel-module@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-babel-module/-/eslint-import-resolver-babel-module-3.0.0.tgz#5cadaca5fa0ae2fe2fcb3566ed9db8ab15db39c0"
-  dependencies:
-    pkg-up "^1.0.0"
-    resolve "^1.2.0"
-
 eslint-import-resolver-node@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.1.tgz#4422574cde66a9a7b099938ee4d508a199e0e3cc"
@@ -4187,12 +4180,6 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-pkg-up@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-1.0.0.tgz#3e08fb461525c4421624a33b9f7e6d0af5b05a26"
-  dependencies:
-    find-up "^1.0.0"
-
 pleeease-filters@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/pleeease-filters/-/pleeease-filters-4.0.0.tgz#6632b2fb05648d2758d865384fbced79e1ccaec7"
@@ -5964,6 +5951,10 @@ tar@^2.2.1:
 text-table@^0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
+
+three-material-modifier@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/three-material-modifier/-/three-material-modifier-0.0.3.tgz#5dbe8967c90f905e50c2a33acfa68ef426ee5322"
 
 three@^0.86.0:
   version "0.86.0"
