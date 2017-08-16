@@ -1,10 +1,12 @@
-# Web
+# Demos
 
-The setup is fairly minimal to allow you the developer to use your prefered WebGL authoring approach.
+* [Anchors](src/js/demos/index/README.md)
+* [Shadows](src/js/demos/shadows/README.md)
+* [Bubbles](src/js/demos/bubbles/README.md)
 
 ## Installation
 
-1. Open your terminal and navigate to the `component-arkit-web/Web` directory
+1. Open your terminal and navigate to the `component-arkit-web/Demos` directory
 2. If you don't have `yarn` globally run `npm i yarn --global`
 3. Install the project dependencies by running `yarn`
 
@@ -14,12 +16,6 @@ The setup is fairly minimal to allow you the developer to use your prefered WebG
 * `yarn tunnel` - Start an ngrok connection for live development
 
 Check package.json for the rest
-
-## Demos
-
-* [Anchors](src/js/demos/index/README.md)
-* [Shadows](src/js/demos/shadows/README.md)
-* [Bubbles](src/js/demos/bubbles/README.md)
 
 ## Debugging
 
