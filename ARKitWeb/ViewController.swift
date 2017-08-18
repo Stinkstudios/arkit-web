@@ -16,9 +16,10 @@ extension MTKView : RenderDestinationProvider {
 }
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
-    
+
     let DEBUG = true
     let IMAGE_DATA = false
+    let POINTCLOUD_DATA = false
 
     var session: ARSession!
     var renderer: RendererDebug!
@@ -201,6 +202,27 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         return data
     }
 
+    func getPointCloudData(frame: ARFrame) -> Dictionary<String, Any> {
+        var pointCloudSize = 0
+
+        if ((frame.rawFeaturePoints?.__count) != nil) {
+            pointCloudSize = (frame.rawFeaturePoints?.__count)!
+        }
+
+        // https://stackoverflow.com/questions/45222259/arkit-how-do-you-iterate-all-detected-feature-points
+        var points = [Any]()
+        for index in 0..<pointCloudSize {
+            let point = frame.rawFeaturePoints?.__points[index]
+            points.append("\(point!)")
+        }
+
+        var data = Dictionary<String, Any>()
+        data["points"] = points
+        data["count"] = pointCloudSize
+
+        return data
+    }
+
     /**
      Perform a hitTest
 
@@ -324,6 +346,10 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
 
         if (IMAGE_DATA) {
             data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
+        }
+
+        if (POINTCLOUD_DATA) {
+            data["pointCloud"] = self.getPointCloudData(frame: frame)
         }
 
         do {

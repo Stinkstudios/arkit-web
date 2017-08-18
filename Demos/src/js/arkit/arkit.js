@@ -1,5 +1,11 @@
 import EventDispatcher from 'happens';
-import { clamp, ARAnchor, ARHitTestResult, ARCamera } from './utils';
+import {
+  clamp,
+  ARAnchor,
+  ARHitTestResult,
+  ARCamera,
+  ARPointCloud
+} from './utils';
 import { ARHitTestResultType } from './constants';
 
 const ARKit = new class ARKitInterface {
@@ -16,6 +22,11 @@ const ARKit = new class ARKitInterface {
 
     // Parse data strings
     data.camera = ARCamera(data.camera);
+
+    // pointCloud data needs to be enabled in ViewController.swift
+    if (data.pointCloud) {
+      data.pointCloud = ARPointCloud(data.pointCloud);
+    }
 
     for (let i = 0; i < data.anchors.length; i += 1) {
       data.anchors[i] = ARAnchor(data.anchors[i]);
@@ -133,7 +144,7 @@ const ARKit = new class ARKitInterface {
     try {
       window.webkit.messageHandlers.callbackHandler.postMessage(data);
     } catch (err) {
-      console.warn('Error posting to webkit callback handler'); // eslint-disable-line
+      console.warn("Error posting to webkit callback handler"); // eslint-disable-line
     }
   }
 }();

@@ -80,6 +80,18 @@ export function ARAnchor(anchor) {
 }
 
 /**
+ * Parse ARPointCloud object values
+ * @param {Object} pointCloud
+ * @return {Object}
+ */
+export function ARPointCloud(pointCloud) {
+  for (let i = 0; i < pointCloud.points.length; i += 1) {
+    pointCloud.points[i] = parseFloat3(pointCloud.points[i]);
+  }
+  return pointCloud;
+}
+
+/**
  * Parse ARHitTestResult string values
  * @param {Object} result
  * @return {Object}
