@@ -3,6 +3,7 @@
 * [Anchors](src/js/demos/index/README.md)
 * [Shadows](src/js/demos/shadows/README.md)
 * [Bubbles](src/js/demos/bubbles/README.md)
+* [PointCloud](src/js/demos/pointcloud/README.md)
 
 ## Installation
 

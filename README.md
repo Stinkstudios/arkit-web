@@ -14,6 +14,7 @@ A starter kit for using ARKit with WebGL
 * [Anchors](Demos/src/js/demos/index/README.md)
 * [Shadows](Demos/src/js/demos/shadows/README.md)
 * [Bubbles](Demos/src/js/demos/bubbles/README.md)
+* [PointCloud](Demos/src/js/demos/pointcloud/README.md)
 
 ## Getting started
 
@@ -48,6 +49,7 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 * [ARAnchor](https://developer.apple.com/documentation/arkit/aranchor)
 * [ARLightEstimate](https://developer.apple.com/documentation/arkit/arlightestimate)
 * [ARHitTestResult](https://developer.apple.com/documentation/arkit/arhittestresult)
+* [ARPointCloud rawFeaturePoints](https://developer.apple.com/documentation/arkit/arframe/2887449-rawfeaturepoints)
 * [ARSession remove(anchor:)](https://developer.apple.com/documentation/arkit/arsession/2865607-remove)
 * Camera feed as base64 to WebGL texture
 
