@@ -1,7 +1,7 @@
 {
-  "name": "component-arkit-web",
+  "name": "arkit-web",
   "version": "0.0.0",
-  "description": "component-arkit-web",
+  "description": "arkit-web",
   "scripts": {
     "start": "yarn run build:clean; concurrently 'yarn run assets' 'yarn run server' 'yarn run watch:css' 'yarn run watch:js' 'yarn run watch:html'",
     "server": "live-server ../ARKitWeb/www --port 3000 --quiet --watch ../ARKitWeb/www --watch ./src --wait 0",
@@ -30,14 +30,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Stinkstudios/component-arkit-web.git"
+    "url": "https://github.com/Stinkstudios/arkit-web.git"
   },
   "author": "Amelie Rosser <amelierosser1986@gmail.com> (https://www.ixviii.io/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Stinkstudios/component-arkit-web/issues"
+    "url": "https://github.com/Stinkstudios/arkit-web/issues"
   },
-  "homepage": "https://github.com/Stinkstudios/component-arkit-web",
+  "homepage": "https://github.com/Stinkstudios/arkit-web",
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",

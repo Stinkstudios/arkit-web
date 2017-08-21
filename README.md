@@ -1,6 +1,6 @@
-# Component ARKit Web
+# ARKit Web
 
-A starter kit for using ARKit with WebGL
+A starter kit for using [ARKit](https://developer.apple.com/arkit/) with WebGL.
 
 ## Features
 

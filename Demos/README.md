@@ -7,7 +7,7 @@
 
 ## Installation
 
-1. Open your terminal and navigate to the `component-arkit-web/Demos` directory
+1. Open your terminal and navigate to the `arkit-web/Demos` directory
 2. If you don't have `yarn` globally run `npm i yarn --global`
 3. Install the project dependencies by running `yarn`
 
