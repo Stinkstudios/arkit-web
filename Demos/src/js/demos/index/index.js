@@ -257,7 +257,7 @@ class App {
 
   onResize = () => {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.cameras.dev.ratio = window.innerWidth / window.innerHeight;
+    this.cameras.dev.aspect = window.innerWidth / window.innerHeight;
     this.cameras.dev.updateProjectionMatrix();
   };
 }
