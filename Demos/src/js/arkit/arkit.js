@@ -1,11 +1,5 @@
 import EventDispatcher from 'happens';
-import {
-  clamp,
-  ARAnchor,
-  ARHitTestResult,
-  ARCamera,
-  ARPointCloud
-} from './utils';
+import { clamp } from './utils';
 import { ARHitTestResultType } from './constants';
 
 const ARKit = new class ARKitInterface {
@@ -18,21 +12,7 @@ const ARKit = new class ARKitInterface {
    * @param  {Object} json
    */
   onARFrame(json) {
-    const data = JSON.parse(json);
-
-    // Parse data strings
-    data.camera = ARCamera(data.camera);
-
-    // pointCloud data needs to be enabled in ViewController.swift
-    if (data.pointCloud) {
-      data.pointCloud = ARPointCloud(data.pointCloud);
-    }
-
-    for (let i = 0; i < data.anchors.length; i += 1) {
-      data.anchors[i] = ARAnchor(data.anchors[i]);
-    }
-
-    this.emit('frame', data);
+    this.emit('frame', JSON.parse(json));
   }
 
   /**
@@ -40,14 +20,7 @@ const ARKit = new class ARKitInterface {
    * @param  {Object} json
    */
   onHitTest(json) {
-    const data = JSON.parse(json);
-
-    // Parse data strings
-    for (let i = 0; i < data.results.length; i += 1) {
-      data.results[i] = ARHitTestResult(data.results[i]);
-    }
-
-    this.emit('hitTest', data);
+    this.emit('hitTest', JSON.parse(json));
   }
 
   /**
@@ -55,13 +28,7 @@ const ARKit = new class ARKitInterface {
    * @param  {Object} json
    */
   onAnchorsAdded(json) {
-    const data = JSON.parse(json);
-
-    for (let i = 0; i < data.anchors.length; i += 1) {
-      data.anchors[i] = ARAnchor(data.anchors[i]);
-    }
-
-    this.emit('anchorsAdded', data);
+    this.emit('anchorsAdded', JSON.parse(json));
   }
 
   /**
@@ -69,13 +36,7 @@ const ARKit = new class ARKitInterface {
    * @param  {Object} json
    */
   onAnchorsRemoved(json) {
-    const data = JSON.parse(json);
-
-    for (let i = 0; i < data.anchors.length; i += 1) {
-      data.anchors[i] = ARAnchor(data.anchors[i]);
-    }
-
-    this.emit('anchorsRemoved', data);
+    this.emit('anchorsRemoved', JSON.parse(json));
   }
 
   /**
