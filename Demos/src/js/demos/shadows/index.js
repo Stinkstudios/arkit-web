@@ -13,7 +13,6 @@ import {
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARCamera from '../../arkit/camera';
-import * as ARKitUtils from '../../arkit/utils';
 import ARAnchorPlane from '../../arkit/objects/anchor-plane';
 import { IS_NATIVE } from '../../arkit/constants';
 import RenderStats from '../../lib/render-stats';
@@ -196,16 +195,10 @@ class App {
   update(data) {
     lights.ambient.intensity = data.ambientIntensity;
 
-    if (data.camera) {
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.matrixWorldInverse,
-        data.camera.matrixWorldInverse
-      );
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.projectionMatrix,
-        data.camera.projection
-      );
-    }
+    this.cameras.ar.matrixWorldInverse.fromArray(
+      data.camera.matrixWorldInverse
+    );
+    this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
 
     data.anchors.forEach(anchor => {
       if (anchor.type === 'ARPlaneAnchor') {
@@ -245,19 +238,12 @@ class App {
 
     this.anchors[anchor.identifier].add(mesh);
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
-
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
     this.scene.add(this.anchors[anchor.identifier]);
   }
 
   updatePlaneMesh(anchor) {
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
     this.anchors[anchor.identifier].children[0].position.fromArray(
       anchor.center
     );

@@ -10,7 +10,6 @@ import dat from 'dat-gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARCamera from '../../arkit/camera';
-import * as ARKitUtils from '../../arkit/utils';
 import { IS_NATIVE } from '../../arkit/constants';
 import ARPointCloud from '../../arkit/objects/pointcloud';
 import RenderStats from '../../lib/render-stats';
@@ -119,16 +118,10 @@ class App {
   };
 
   update(data) {
-    if (data.camera) {
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.matrixWorldInverse,
-        data.camera.matrixWorldInverse
-      );
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.projectionMatrix,
-        data.camera.projection
-      );
-    }
+    this.cameras.ar.matrixWorldInverse.fromArray(
+      data.camera.matrixWorldInverse
+    );
+    this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
 
     if (data.pointCloud) {
       this.totalPoints = data.pointCloud.count;

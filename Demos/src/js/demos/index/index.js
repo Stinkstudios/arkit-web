@@ -11,7 +11,6 @@ import dat from 'dat-gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARCamera from '../../arkit/camera';
-import * as ARKitUtils from '../../arkit/utils';
 import ARAnchorCube from '../../arkit/objects/anchor-cube';
 import ARAnchorPlane from '../../arkit/objects/anchor-plane';
 import { IS_NATIVE } from '../../arkit/constants';
@@ -159,16 +158,10 @@ class App {
   update(data) {
     lights.ambient.intensity = data.ambientIntensity;
 
-    if (data.camera) {
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.matrixWorldInverse,
-        data.camera.matrixWorldInverse
-      );
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.projectionMatrix,
-        data.camera.projection
-      );
-    }
+    this.cameras.ar.matrixWorldInverse.fromArray(
+      data.camera.matrixWorldInverse
+    );
+    this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
 
     this.totalAnchors = data.anchors.length;
 
@@ -196,11 +189,7 @@ class App {
     // Returns a mesh instance
     this.anchors[anchor.identifier] = new ARAnchorCube();
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
-
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
     this.scene.add(this.anchors[anchor.identifier]);
   }
 
@@ -214,26 +203,16 @@ class App {
 
     this.anchors[anchor.identifier].add(mesh);
     this.anchors[anchor.identifier].matrixAutoUpdate = false;
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
-
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
     this.scene.add(this.anchors[anchor.identifier]);
   }
 
   updateMesh(anchor) {
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
   }
 
   updatePlaneMesh(anchor) {
-    ARKitUtils.copyMatrix4(
-      this.anchors[anchor.identifier].matrix,
-      anchor.transform
-    );
+    this.anchors[anchor.identifier].matrix.fromArray(anchor.transform);
     this.anchors[anchor.identifier].children[0].position.fromArray(
       anchor.center
     );

@@ -12,7 +12,6 @@ import {
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARCamera from '../../arkit/camera';
-import * as ARKitUtils from '../../arkit/utils';
 import { IS_NATIVE } from '../../arkit/constants';
 import ARVideoTexture from '../../arkit/video-texture';
 import RenderStats from '../../lib/render-stats';
@@ -155,21 +154,15 @@ class App {
     }
 
     this.bubbles.update(
-      data.camera.transform[3][0], // 12
-      data.camera.transform[3][1], // 13
-      data.camera.transform[3][2] // 14
+      data.camera.transform[12],
+      data.camera.transform[13],
+      data.camera.transform[14]
     );
 
-    if (data.camera) {
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.matrixWorldInverse,
-        data.camera.matrixWorldInverse
-      );
-      ARKitUtils.copyMatrix4(
-        this.cameras.ar.projectionMatrix,
-        data.camera.projection
-      );
-    }
+    this.cameras.ar.matrixWorldInverse.fromArray(
+      data.camera.matrixWorldInverse
+    );
+    this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
   }
 
   renderDev = () => {
