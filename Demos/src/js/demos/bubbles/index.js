@@ -9,6 +9,7 @@ import {
   PCFSoftShadowMap,
   Math as MathUtils
 } from 'three';
+import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARConfig from '../../arkit/config';
@@ -28,8 +29,9 @@ const SHOW_STATS = false;
 
 class App {
   constructor() {
-    // Enable image frame data
+    // Set the config
     ARConfig.imageFrame = true;
+    ARConfig.pointCloud = false;
 
     // Renderer
     this.renderer = new WebGLRenderer({

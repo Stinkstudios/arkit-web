@@ -10,8 +10,10 @@ import {
   PCFSoftShadowMap,
   Math as MathUtils
 } from 'three';
+import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
+import ARConfig from '../../arkit/config';
 import ARCamera from '../../arkit/camera';
 import ARAnchorPlane from '../../objects/anchor-plane';
 import { IS_NATIVE } from '../../arkit/constants';
@@ -25,10 +27,14 @@ import Floor from './objects/floor/floor';
 import Primitive from './objects/primitive/primitive';
 
 // Constants
-const SHOW_STATS = true;
+const SHOW_STATS = false;
 
 class App {
   constructor() {
+    // Set the config
+    ARConfig.imageFrame = false;
+    ARConfig.pointCloud = false;
+
     // Renderer
     this.renderer = new WebGLRenderer({
       alpha: true

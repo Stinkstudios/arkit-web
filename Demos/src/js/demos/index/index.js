@@ -7,7 +7,7 @@ import {
   GridHelper,
   AxisHelper
 } from 'three';
-import dat from 'dat-gui';
+import gui from '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARConfig from '../../arkit/config';
@@ -20,10 +20,14 @@ import stats from '../../lib/stats';
 import TouchControls from '../../lib/touch-controls';
 import lights from './lights';
 
-const SHOW_STATS = true;
+const SHOW_STATS = false;
 
 class App {
   constructor() {
+    // Set the config
+    ARConfig.imageFrame = false;
+    ARConfig.pointCloud = false;
+
     // Renderer
     this.renderer = new WebGLRenderer({
       alpha: true
@@ -72,7 +76,6 @@ class App {
 
     // Gui
     this.totalAnchors = 0;
-    const gui = new dat.GUI();
     const guiConfig = gui.addFolder('ar config');
     guiConfig.open();
 

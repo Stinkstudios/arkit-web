@@ -6,7 +6,7 @@ import {
   GridHelper,
   AxisHelper
 } from 'three';
-import dat from 'dat-gui';
+import gui from '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARConfig from '../../arkit/config';
@@ -16,11 +16,12 @@ import ARPointCloud from '../../objects/pointcloud';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 
-const SHOW_STATS = true;
+const SHOW_STATS = false;
 
 class App {
   constructor() {
-    // Enable point cloud data
+    // Set the config
+    ARConfig.imageFrame = false;
     ARConfig.pointCloud = true;
 
     // Renderer
@@ -63,9 +64,8 @@ class App {
 
     // Gui
     this.count = 0;
-    this.gui = new dat.GUI();
-    this.gui.add(ARConfig, 'pointCloud').name('enabled').listen();
-    this.gui.add(this, 'count').listen();
+    gui.add(ARConfig, 'pointCloud').name('enabled').listen();
+    gui.add(this, 'count').listen();
 
     this.addObjects();
     this.bindListeners();
