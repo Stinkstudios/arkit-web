@@ -10,9 +10,10 @@ import {
 import dat from 'dat-gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
+import ARConfig from '../../arkit/config';
 import ARCamera from '../../arkit/camera';
-import ARAnchorCube from '../../arkit/objects/anchor-cube';
-import ARAnchorPlane from '../../arkit/objects/anchor-plane';
+import ARAnchorCube from '../../objects/anchor-cube';
+import ARAnchorPlane from '../../objects/anchor-plane';
 import { IS_NATIVE } from '../../arkit/constants';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
@@ -71,9 +72,16 @@ class App {
 
     // Gui
     this.totalAnchors = 0;
-    this.gui = new dat.GUI();
-    this.gui.add(this, 'totalAnchors').listen();
-    this.gui.add(this, 'removeAnchors');
+    const gui = new dat.GUI();
+    const guiConfig = gui.addFolder('ar config');
+    guiConfig.open();
+
+    guiConfig.add(ARConfig.camera, 'near', 0, 1).name('camera near');
+    guiConfig.add(ARConfig.camera, 'far', 0, 5000).name('camera far');
+
+    const guiAnchors = gui.addFolder('anchors');
+    guiAnchors.open();
+    guiAnchors.add(this, 'totalAnchors').name('total').listen();
 
     // Map of anchors
     // identifier is the key
@@ -117,14 +125,6 @@ class App {
       this._renderStats.update(this.renderer);
       stats.end();
     }
-  };
-
-  removeAnchors = () => {
-    console.log('remove all anchors'); // eslint-disable-line no-console
-
-    const identifiers = Object.keys(this.anchors);
-
-    ARKit.removeAnchors(identifiers);
   };
 
   onARAnchorsAdded = data => {
@@ -184,7 +184,7 @@ class App {
   }
 
   addMesh(anchor) {
-    console.log("adding", anchor.identifier); // eslint-disable-line
+    console.log('adding', anchor.identifier); // eslint-disable-line
 
     // Returns a mesh instance
     this.anchors[anchor.identifier] = new ARAnchorCube();
@@ -194,7 +194,7 @@ class App {
   }
 
   addPlaneMesh(anchor) {
-    console.log("adding", anchor.identifier); // eslint-disable-line
+    console.log('adding', anchor.identifier); // eslint-disable-line
 
     this.anchors[anchor.identifier] = new Object3D();
 

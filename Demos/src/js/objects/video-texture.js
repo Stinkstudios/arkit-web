@@ -10,10 +10,6 @@ export default class ARVideoTexture {
     this.texture = new Texture(this.canvas);
   }
 
-  get() {
-    return this.texture;
-  }
-
   update(image) {
     this.image.src = `data:image/jpg;base64, ${image}`;
 

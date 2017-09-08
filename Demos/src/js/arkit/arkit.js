@@ -1,10 +1,15 @@
+import 'object.observe';
 import EventDispatcher from 'happens';
+import Observed from 'observed';
 import { clamp } from './utils';
 import { ARHitTestResultType } from './constants';
+import ARConfig from './config';
 
 const ARKit = new class ARKitInterface {
   constructor() {
     EventDispatcher(this);
+    const observer = Observed(ARConfig);
+    observer.on('change', this.updateConfig);
   }
 
   /**
@@ -98,6 +103,17 @@ const ARKit = new class ARKitInterface {
   }
 
   /**
+   * Whenever the config changes, update the native ARConfig
+   */
+  updateConfig = () => {
+    const data = {
+      action: 'config',
+      value: ARConfig
+    };
+    this.postMessage(data);
+  };
+
+  /**
    * postMessage to the ViewController
    * @param  {Object} data
    */
@@ -105,7 +121,7 @@ const ARKit = new class ARKitInterface {
     try {
       window.webkit.messageHandlers.callbackHandler.postMessage(data);
     } catch (err) {
-      console.warn("Error posting to webkit callback handler"); // eslint-disable-line
+      console.warn('Error posting to webkit callback handler'); // eslint-disable-line
     }
   }
 }();

@@ -13,7 +13,7 @@ import {
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARCamera from '../../arkit/camera';
-import ARAnchorPlane from '../../arkit/objects/anchor-plane';
+import ARAnchorPlane from '../../objects/anchor-plane';
 import { IS_NATIVE } from '../../arkit/constants';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
@@ -81,8 +81,8 @@ class App {
     // identifier is the key
     this.anchors = {};
 
-    this.floorVector = new Vector3();
-    this.floorPositionY = 0;
+    this.floorVector = new Vector3(0, Infinity, 0);
+    this.floorPositionY = Infinity;
     this.container = new Object3D();
     this.scene.add(this.container);
 
@@ -159,7 +159,6 @@ class App {
 
   onARAnchorsAdded = data => {
     console.log('onAnchorsAdded', data); // eslint-disable-line no-console
-    this.updateFloorPosition();
   };
 
   onARAnchorsRemoved = data => {
@@ -168,7 +167,6 @@ class App {
         this.scene.remove(this.anchors[anchor.identifier]);
       }
     });
-    this.updateFloorPosition();
   };
 
   onARSessionInterupted = () => {
@@ -209,6 +207,8 @@ class App {
         }
       }
     });
+
+    this.updateFloorPosition();
   }
 
   updateFloorPosition() {
@@ -227,7 +227,7 @@ class App {
   }
 
   addPlaneMesh(anchor) {
-    console.log("adding", anchor.identifier); // eslint-disable-line
+    console.log('adding', anchor.identifier); // eslint-disable-line
 
     this.anchors[anchor.identifier] = new Object3D();
     this.anchors[anchor.identifier].anchorType = 'ARPlaneAnchor';

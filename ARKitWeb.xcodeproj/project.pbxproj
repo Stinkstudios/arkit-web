@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C2973051F61B93800058754 /* ARConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2973041F61B93800058754 /* ARConfig.swift */; };
 		9C34FC781F2A4A5400EB58C7 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C34FC771F2A4A5400EB58C7 /* ImageUtil.swift */; };
 		9C45625F1F21FB7D00A1472B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C45625E1F21FB7D00A1472B /* AppDelegate.swift */; };
 		9C4562611F21FB7D00A1472B /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9C4562601F21FB7D00A1472B /* Shaders.metal */; };
-		9C4562641F21FB7D00A1472B /* RendererDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4562631F21FB7D00A1472B /* RendererDebug.swift */; };
+		9C4562641F21FB7D00A1472B /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4562631F21FB7D00A1472B /* Renderer.swift */; };
 		9C4562661F21FB7D00A1472B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4562651F21FB7D00A1472B /* ViewController.swift */; };
 		9C4562691F21FB7D00A1472B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C4562671F21FB7D00A1472B /* Main.storyboard */; };
 		9C45626B1F21FB7D00A1472B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C45626A1F21FB7D00A1472B /* Assets.xcassets */; };
@@ -19,12 +20,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C2973041F61B93800058754 /* ARConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARConfig.swift; sourceTree = "<group>"; };
 		9C34FC771F2A4A5400EB58C7 /* ImageUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
 		9C45625B1F21FB7D00A1472B /* ARKitWeb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C45625E1F21FB7D00A1472B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C4562601F21FB7D00A1472B /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		9C4562621F21FB7D00A1472B /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
-		9C4562631F21FB7D00A1472B /* RendererDebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererDebug.swift; sourceTree = "<group>"; };
+		9C4562631F21FB7D00A1472B /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		9C4562651F21FB7D00A1472B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		9C4562681F21FB7D00A1472B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9C45626A1F21FB7D00A1472B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -64,11 +66,12 @@
 		9C45625D1F21FB7D00A1472B /* ARKitWeb */ = {
 			isa = PBXGroup;
 			children = (
+				9C2973041F61B93800058754 /* ARConfig.swift */,
 				9C8B047F1F26299B00618E78 /* www */,
 				9C45625E1F21FB7D00A1472B /* AppDelegate.swift */,
 				9C4562601F21FB7D00A1472B /* Shaders.metal */,
 				9C4562621F21FB7D00A1472B /* ShaderTypes.h */,
-				9C4562631F21FB7D00A1472B /* RendererDebug.swift */,
+				9C4562631F21FB7D00A1472B /* Renderer.swift */,
 				9C4562651F21FB7D00A1472B /* ViewController.swift */,
 				9C4562671F21FB7D00A1472B /* Main.storyboard */,
 				9C45626A1F21FB7D00A1472B /* Assets.xcassets */,
@@ -152,8 +155,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C2973051F61B93800058754 /* ARConfig.swift in Sources */,
 				9C4562611F21FB7D00A1472B /* Shaders.metal in Sources */,
-				9C4562641F21FB7D00A1472B /* RendererDebug.swift in Sources */,
+				9C4562641F21FB7D00A1472B /* Renderer.swift in Sources */,
 				9C4562661F21FB7D00A1472B /* ViewController.swift in Sources */,
 				9C45625F1F21FB7D00A1472B /* AppDelegate.swift in Sources */,
 				9C34FC781F2A4A5400EB58C7 /* ImageUtil.swift in Sources */,

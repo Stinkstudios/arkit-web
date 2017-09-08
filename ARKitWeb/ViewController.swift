@@ -18,11 +18,9 @@ extension MTKView : RenderDestinationProvider {
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
     
     let DEBUG = true
-    let IMAGE_DATA = false
-    let POINTCLOUD_DATA = false
     
     var session: ARSession!
-    var renderer: RendererDebug!
+    var renderer: Renderer!
     var webView: WKWebView!
     
     // The current viewport size
@@ -84,7 +82,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             }
             
             // Configure the renderer to draw to the view
-            renderer = RendererDebug(session: session, metalDevice: view.device!, renderDestination: view)
+            renderer = Renderer(session: session, metalDevice: view.device!, renderDestination: view)
             
             renderer.drawRectResized(size: view.bounds.size)
         }
@@ -129,7 +127,6 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      Reference: https://developer.apple.com/documentation/arkit/aranchor
      */
     func addAnchor() {
-        if (!ARWorldTrackingConfiguration.isSupported) { return }
         if let currentFrame = session.currentFrame {
             // Create a transform with a translation of 0.2 meters in front of the camera
             var translation = matrix_identity_float4x4
@@ -177,7 +174,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         // Uncomment if needed (make sure to parse the data in arkit/utils.js)
         data["transform"] = simdFloat4x4ToArray(m: camera.transform)
         // The projection matrix here matches the one in Renderer.swift
-        data["projection" ] = simdFloat4x4ToArray(m: camera.projectionMatrix(for: .landscapeRight, viewportSize: viewportSize, zNear: 0.001, zFar: 1000))
+        let zNear = CGFloat(ARConfig.camera.near)
+        let zFar = CGFloat(ARConfig.camera.far)
+        data["projection" ] = simdFloat4x4ToArray(m: camera.projectionMatrix(for: .landscapeRight, viewportSize: viewportSize, zNear: zNear, zFar: zFar))
         data["matrixWorldInverse"] = simdFloat4x4ToArray(m: simd_inverse(camera.transform))
         data["eulerAngles"] = simdFloat3ToArray(v: camera.eulerAngles)
         return data
@@ -291,6 +290,17 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         
     }
     
+    /**
+     Update the ARConfig
+     */
+    func updateARConfig(config: NSDictionary) {        
+        let camera = config["camera"] as! NSDictionary
+        ARConfig.camera.far = camera["far"] as! Double
+        ARConfig.camera.near = camera["near"] as! Double
+        ARConfig.pointCloud = config["pointCloud"] as! Bool
+        ARConfig.imageFrame = config["imageFrame"] as! Bool
+    }
+    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         // Handle message callbacks from javascript
         if(message.name == "callbackHandler") {
@@ -300,6 +310,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             let action = data["action"] as! String
             
             switch(action) {
+            case "config":
+                let config = data["value"] as! NSDictionary
+                self.updateARConfig(config: config)
             case "addAnchor":
                 self.addAnchor()
             case "removeAnchors":
@@ -356,11 +369,11 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
         data["ambientIntensity"] = ambientIntensity
         
-        if (IMAGE_DATA) {
+        if (ARConfig.imageFrame) {
             data["image"] = imageUtil.getImageData(pixelBuffer: frame.capturedImage)
         }
         
-        if (POINTCLOUD_DATA) {
+        if (ARConfig.pointCloud) {
             data["pointCloud"] = self.getPointCloudData(frame: frame)
         }
         

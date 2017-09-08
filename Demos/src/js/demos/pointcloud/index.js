@@ -9,9 +9,10 @@ import {
 import dat from 'dat-gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
+import ARConfig from '../../arkit/config';
 import ARCamera from '../../arkit/camera';
 import { IS_NATIVE } from '../../arkit/constants';
-import ARPointCloud from '../../arkit/objects/pointcloud';
+import ARPointCloud from '../../objects/pointcloud';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 
@@ -19,6 +20,9 @@ const SHOW_STATS = true;
 
 class App {
   constructor() {
+    // Enable point cloud data
+    ARConfig.pointCloud = true;
+
     // Renderer
     this.renderer = new WebGLRenderer({
       alpha: true
@@ -58,9 +62,10 @@ class App {
     }
 
     // Gui
-    this.totalPoints = 0;
+    this.count = 0;
     this.gui = new dat.GUI();
-    this.gui.add(this, 'totalPoints').listen();
+    this.gui.add(ARConfig, 'pointCloud').name('enabled').listen();
+    this.gui.add(this, 'count').listen();
 
     this.addObjects();
     this.bindListeners();
@@ -124,7 +129,7 @@ class App {
     this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
 
     if (data.pointCloud) {
-      this.totalPoints = data.pointCloud.count;
+      this.count = data.pointCloud.count;
       this.pointCloud.update(data.pointCloud.points);
     }
   }

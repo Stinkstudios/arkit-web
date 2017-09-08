@@ -11,9 +11,10 @@ import {
 } from 'three';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
+import ARConfig from '../../arkit/config';
 import ARCamera from '../../arkit/camera';
 import { IS_NATIVE } from '../../arkit/constants';
-import ARVideoTexture from '../../arkit/video-texture';
+import ARVideoTexture from '../../objects/video-texture';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 import TouchControls from '../../lib/touch-controls';
@@ -27,6 +28,9 @@ const SHOW_STATS = false;
 
 class App {
   constructor() {
+    // Enable image frame data
+    ARConfig.imageFrame = true;
+
     // Renderer
     this.renderer = new WebGLRenderer({
       alpha: true
@@ -101,7 +105,7 @@ class App {
 
   addObjects() {
     this.videoTexture = new ARVideoTexture();
-    this.bubbles = new Bubbles(this.container, this.videoTexture.get()); // eslint-disable-line no-unused-vars
+    this.bubbles = new Bubbles(this.container, this.videoTexture.texture);
   }
 
   bindListeners() {

@@ -51,6 +51,7 @@ export default class ARPointCloud {
     });
 
     this.mesh = new Points(geometry, material);
+    this.mesh.frustumCulled = false;
     this.count = this.mesh.geometry.attributes.position.count;
   }
 

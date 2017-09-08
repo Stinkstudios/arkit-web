@@ -44,7 +44,6 @@ ARCamera.prototype = Object.assign(Object.create(Object3D.prototype), {
 
   /**
    * We set the matrixWorldInverse directly
-   * @return {[type]} [description]
    */
   updateMatrixWorld(/* force */) {
     // Object3D.prototype.updateMatrixWorld.call( this, force );

@@ -1876,6 +1876,12 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
+debug@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.1.1.tgz#e0c548cc607adc22b537540dc3639c4236fdf90c"
+  dependencies:
+    ms "0.6.2"
+
 debug@2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
@@ -3745,6 +3751,10 @@ morgan@^1.6.1:
     on-finished "~2.3.0"
     on-headers "~1.0.1"
 
+ms@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-0.6.2.tgz#d89c2124c6fdc1353d65a8b77bf1aac4b193708c"
+
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
@@ -3946,12 +3956,22 @@ object.assign@^4.0.1:
     function-bind "^1.1.0"
     object-keys "^1.0.10"
 
+object.observe@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/object.observe/-/object.observe-0.2.6.tgz#7603c5dc91f05e7fe78ce2dcc45fc95dbb764f0b"
+
 object.omit@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/object.omit/-/object.omit-2.0.1.tgz#1a9c744829f39dbb858c76ca3579ae2a54ebd1fa"
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
+
+observed@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/observed/-/observed-1.1.2.tgz#17a78fc56d56ad941315e95d54041e2c2ade2f6f"
+  dependencies:
+    debug "2.1.1"
 
 on-finished@~2.3.0:
   version "2.3.0"
