@@ -15,7 +15,6 @@ import WebKit
 class ImageUtil {
 
     var context: CIContext = CIContext()
-    var colorSpace: CGColorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
     let jpegCompressionQuality: CGFloat = 0.5
     let scale: CGFloat = 0.25;
 
