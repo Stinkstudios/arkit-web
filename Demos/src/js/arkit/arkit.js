@@ -102,6 +102,14 @@ const ARKit = new class ARKitInterface {
     this.postMessage(data);
   }
 
+  loadPage(value) {
+    const data = {
+      action: 'loadPage',
+      value
+    };
+    this.postMessage(data);
+  }
+
   /**
    * Whenever the config changes, update the native ARConfig
    */
