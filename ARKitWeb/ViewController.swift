@@ -64,7 +64,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             view.addSubview(webView)
             
             // Load first demo
-            self.loadDemo(demo: "index")
+            self.loadWebPage(page: "index")
             
             guard view.device != nil else {
                 print("Metal is not supported on this device")
@@ -291,16 +291,19 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         ARConfig.imageFrame = config["imageFrame"] as! Bool
     }
     
-    func loadDemo(demo: String) {
+    /**
+     Load a web page
+     */
+    func loadWebPage(page: String) {
         if (DEBUG) {
             
             let DEV_URL = Bundle.main.infoDictionary!["DEV_URL"] as! String
-            let demoUrl = "\(DEV_URL)/\(demo).html"
+            let demoUrl = "\(DEV_URL)/\(page).html"
             
             let url = URL(string: demoUrl)!
             webView.load(URLRequest(url: url))
         } else {
-            if let path = Bundle.main.path(forResource: "www/\(demo)", ofType: "html") {
+            if let path = Bundle.main.path(forResource: "www/\(page)", ofType: "html") {
                 webView.load(URLRequest(url: URL(fileURLWithPath: path)))
             }
         }
@@ -329,9 +332,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                 let y = point["y"] as! Double
                 let hitType = data["hitType"] as! NSNumber
                 self.hitTest(point: CGPoint.init(x: x, y: y), hitType: hitType)
-            case "loadDemo":
-                let demo = data["value"] as! String
-                self.loadDemo(demo: demo)
+            case "loadPage":
+                let page = data["value"] as! String
+                self.loadWebPage(page: page)
             default: break
             }
         }
