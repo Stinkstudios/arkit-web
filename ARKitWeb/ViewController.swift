@@ -17,7 +17,7 @@ extension MTKView : RenderDestinationProvider {
 
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
     
-    let DEBUG = true
+    let DEBUG = false
     
     var session: ARSession!
     var renderer: Renderer!
@@ -63,18 +63,8 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             // Add the webview as a subview of MTKView
             view.addSubview(webView)
             
-            // Use ngrok for live reload developing
-            if (DEBUG) {
-                
-                let DEV_URL = Bundle.main.infoDictionary!["DEV_URL"] as! String
-                
-                let url = URL(string: DEV_URL)!
-                webView.load(URLRequest(url: url))
-            } else {
-                if let path = Bundle.main.path(forResource: "www/index", ofType: "html") {
-                    webView.load(URLRequest(url: URL(fileURLWithPath: path)))
-                }
-            }
+            // Load first demo
+            self.loadDemo(demo: "index")
             
             guard view.device != nil else {
                 print("Metal is not supported on this device")
@@ -136,15 +126,15 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             // Add a new anchor to the session
             let anchor = ARAnchor(transform: transform)
             
-            print("addAnchor \(anchor.identifier)")
+            // print("addAnchor \(anchor.identifier)")
             
             session.add(anchor: anchor)
         }
     }
     
     func removeAnchors(identifiers: [NSString]) {
-        print("removeAnchors")
-        print(identifiers)
+        // print("removeAnchors")
+        // print(identifiers)
         
         if let currentFrame = session.currentFrame {
             for (_, anchor) in currentFrame.anchors.enumerated() {
@@ -301,6 +291,21 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
         ARConfig.imageFrame = config["imageFrame"] as! Bool
     }
     
+    func loadDemo(demo: String) {
+        if (DEBUG) {
+            
+            let DEV_URL = Bundle.main.infoDictionary!["DEV_URL"] as! String
+            let demoUrl = "\(DEV_URL)/\(demo).html"
+            
+            let url = URL(string: demoUrl)!
+            webView.load(URLRequest(url: url))
+        } else {
+            if let path = Bundle.main.path(forResource: "www/\(demo)", ofType: "html") {
+                webView.load(URLRequest(url: URL(fileURLWithPath: path)))
+            }
+        }
+    }
+    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         // Handle message callbacks from javascript
         if(message.name == "callbackHandler") {
@@ -324,6 +329,9 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
                 let y = point["y"] as! Double
                 let hitType = data["hitType"] as! NSNumber
                 self.hitTest(point: CGPoint.init(x: x, y: y), hitType: hitType)
+            case "loadDemo":
+                let demo = data["value"] as! String
+                self.loadDemo(demo: demo)
             default: break
             }
         }
@@ -404,7 +412,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      @param anchors An array of added anchors.
      */
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-        print("Anchors added")
+        // print("Anchors added")
         var data = Dictionary<String, Any>()
         data["anchors"] = self.getAnchorsData(anchors: anchors)
         
@@ -437,7 +445,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      @param anchors An array of removed anchors.
      */
     func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
-        print("Anchors removed")
+        // print("Anchors removed")
         var data = Dictionary<String, Any>()
         data["anchors"] = self.getAnchorsData(anchors: anchors)
         
@@ -455,7 +463,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
         // (If the user leaves the app)
-        print("sessionWasInterrupted")
+        // print("sessionWasInterrupted")
         let api = "ARKit.onSessionInterupted()";
         self.callClient(api: api)
     }
@@ -463,7 +471,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         // When the user returns to the app
-        print("sessionInterruptionEnded")
+        // print("sessionInterruptionEnded")
         let api = "ARKit.onSessionInteruptedEnded()";
         self.callClient(api: api)
     }
