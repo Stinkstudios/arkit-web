@@ -6,7 +6,7 @@ import {
   GridHelper,
   AxisHelper
 } from 'three';
-import gui from '../gui';
+import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARConfig from '../../arkit/config';
@@ -61,11 +61,6 @@ class App {
       document.body.appendChild(this._renderStats.domElement);
       document.body.appendChild(stats.domElement);
     }
-
-    // Gui
-    this.count = 0;
-    gui.add(ARConfig, 'pointCloud').name('enabled').listen();
-    gui.add(this, 'count').listen();
 
     this.addObjects();
     this.bindListeners();
@@ -129,7 +124,6 @@ class App {
     this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
 
     if (data.pointCloud) {
-      this.count = data.pointCloud.count;
       this.pointCloud.update(data.pointCloud.points);
     }
   }

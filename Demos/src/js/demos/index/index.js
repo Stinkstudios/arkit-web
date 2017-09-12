@@ -7,7 +7,7 @@ import {
   GridHelper,
   AxisHelper
 } from 'three';
-import gui from '../gui';
+import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
 import ARKit from '../../arkit/arkit';
 import ARConfig from '../../arkit/config';
@@ -73,18 +73,6 @@ class App {
 
     // Controls
     this.touchControls = new TouchControls(this.renderer.domElement);
-
-    // Gui
-    this.totalAnchors = 0;
-    const guiConfig = gui.addFolder('ar config');
-    guiConfig.open();
-
-    guiConfig.add(ARConfig.camera, 'near', 0, 1).name('camera near');
-    guiConfig.add(ARConfig.camera, 'far', 0, 5000).name('camera far');
-
-    const guiAnchors = gui.addFolder('anchors');
-    guiAnchors.open();
-    guiAnchors.add(this, 'totalAnchors').name('total').listen();
 
     // Map of anchors
     // identifier is the key
@@ -165,8 +153,6 @@ class App {
       data.camera.matrixWorldInverse
     );
     this.cameras.ar.projectionMatrix.fromArray(data.camera.projection);
-
-    this.totalAnchors = data.anchors.length;
 
     data.anchors.forEach(anchor => {
       if (anchor.type === 'ARPlaneAnchor') {
