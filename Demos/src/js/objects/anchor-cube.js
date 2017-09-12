@@ -9,8 +9,7 @@ export default class ARAnchorCube {
     const mesh = new Mesh(
       geometry,
       new MeshLambertMaterial({
-        color: 0xffffff * Math.random(),
-        wireframe: true
+        color: 0xffffff * Math.random()
       })
     );
     return mesh;
