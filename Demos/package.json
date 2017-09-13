@@ -42,8 +42,8 @@
   },
   "homepage": "https://github.com/Stinkstudios/arkit-web",
   "engines": {
-    "node": ">=8.5.0",
-    "npm": ">=4.2.0",
+    "node": "^8.5.0",
+    "npm": "^4.2.0",
     "yarn": "^0.27.5"
   },
   "devDependencies": {
