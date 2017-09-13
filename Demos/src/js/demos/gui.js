@@ -17,12 +17,12 @@ const controller = {
 const gui = new dat.GUI();
 gui.open();
 
-gui.add(controller, 'demo', demos).onChange(demo => {
+gui.add(controller, 'demo', demos).onChange(value => {
   if (IS_NATIVE) {
-    ARKit.loadPage(demo);
+    ARKit.loadPage(value);
   } else {
-    demo = demo === demos[0] ? 'index' : demo;
-    window.location.href = `${demo}.html`;
+    const page = value === demos[0] ? 'index' : value;
+    window.location.href = `${page}.html`;
   }
 });
 

@@ -38,9 +38,9 @@ const dirs = fs.readdirSync('./src/js/demos').filter(isDir);
 
 const entries = {};
 
-// To make developing an example faster
-// set the env variable EXAMPLE e.g:
-// EXAMPLE=linegeometry npm run start
+// To watch / compile a single demo
+// set the env variable DEMO e.g:
+// DEMO=bubbles npm run start
 const demoDir = process.env.DEMO;
 
 if (demoDir !== undefined) {
@@ -57,8 +57,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, constants.BUILD),
     publicPath: process.env.BASE_URL || '/',
-    filename: `${constants.ASSETS}/${constants.JS}/[name].js`,
-    chunkFilename: `${constants.ASSETS}/${constants.JS}/[name].[chunkhash].chunk.js`
+    filename: `${constants.ASSETS}/${constants.JS}/[name].js`
   },
   module: {
     loaders: [

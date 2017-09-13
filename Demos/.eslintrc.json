@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "extends": ["airbnb-base", "prettier"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "rules": {
+    "arrow-body-style": ["error", "as-needed"],
+    "import/prefer-default-export": 0,
+    "prefer-destructuring": 0,
+    "import/no-named-as-default": 0,
+    "comma-dangle": 0
+  }
+}

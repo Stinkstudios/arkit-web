@@ -125,13 +125,13 @@ const ARKit = new class ARKitInterface {
    * postMessage to the ViewController
    * @param  {Object} data
    */
-  postMessage(data) {
+  postMessage = data => {
     try {
       window.webkit.messageHandlers.callbackHandler.postMessage(data);
     } catch (err) {
       console.warn('Error posting to webkit callback handler'); // eslint-disable-line
     }
-  }
+  };
 }();
 
 export default ARKit;

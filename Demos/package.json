@@ -3,28 +3,30 @@
   "version": "0.0.0",
   "description": "arkit-web",
   "scripts": {
-    "start": "yarn run build:clean; concurrently 'yarn run assets' 'yarn run server' 'yarn run watch:css' 'yarn run watch:js' 'yarn run watch:html'",
-    "server": "live-server ../ARKitWeb/www --port 3000 --quiet --watch ../ARKitWeb/www --watch ./src --wait 0",
-    "watch:css": "cross-env NODE_ENV=development node ./internals/postcss -w",
-    "watch:js": "cross-env NODE_ENV=development webpack --config webpack.config.js --colors --watch",
-    "watch:html": "pug --watch ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
-    "build": "yarn run build:clean; yarn run assets; yarn run build:js; yarn run build:css; yarn run build:html;",
-    "build:css": "cross-env NODE_ENV=production node ./internals/postcss",
-    "build:js": "cross-env NODE_ENV=production webpack --config webpack.config.js --colors;",
-    "build:html": "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
+    "start":
+      "yarn run build:clean; concurrently 'yarn run assets' 'yarn run server' 'yarn run watch:js' 'yarn run watch:html'",
+    "server":
+      "live-server ../ARKitWeb/www --port 3000 --quiet --watch ../ARKitWeb/www --watch ./src --wait 0",
+    "watch:js":
+      "cross-env NODE_ENV=development webpack --config webpack.config.js --colors --watch",
+    "watch:html":
+      "pug --watch ./src/templates/*.pug --silent --obj ./config.js --pretty --out ../ARKitWeb/www",
+    "build":
+      "yarn run build:clean; yarn run assets; yarn run build:js; yarn run build:html;",
+    "build:js":
+      "cross-env NODE_ENV=production webpack --config webpack.config.js --colors;",
+    "build:html":
+      "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
     "build:clean": "rm -rf ../ARKitWeb/www/*",
     "assets": "cp -R ./assets/ ../ARKitWeb/www/assets;",
-    "prettier": "prettier --write --single-quote --print-width 80 './src/js/**/*.js'",
-    "prettier:internals": "prettier --write --single-quote --print-width 80 \"internals/**/*.js\"",
-    "stylefmt": "stylefmt --c .stylelintrc -r \"src/**/**/*.css\"",
-    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
-    "formatting": "yarn run prettier && yarn run stylefmt",
-    "lint-staged": "echo 'Running lint-staged for staged files...' && lint-staged",
-    "lint:css": "stylelint ./src/**/*.css ./src/**/**/*.css --cache",
-    "lint:eslint": "eslint --ext .js ./src ./internals --cache",
-    "lint:fix": "eslint --ext .js ./src --cache --fix",
-    "lint:js": "yarn run lint:eslint",
-    "lint": "yarn run lint:js && yarn run lint:css",
+    "prettier":
+      "prettier --write --single-quote --print-width 80 './src/js/**/*.js'",
+    "prettier:internals":
+      "prettier --write --single-quote --print-width 80 \"internals/**/*.js\"",
+    "formatting": "yarn run prettier && yarn run prettier:internals",
+    "lint:fix": "eslint --config .eslintrc.json --ext .js ./src --cache --fix",
+    "lint":
+      "eslint --config .eslintrc.json --ext .js ./src ./internals --cache",
     "precommit": "yarn run lint",
     "tunnel": "ngrok http 8080"
   },
@@ -32,12 +34,18 @@
     "type": "git",
     "url": "https://github.com/Stinkstudios/arkit-web.git"
   },
-  "author": "Amelie Rosser <amelierosser1986@gmail.com> (https://www.ixviii.io/)",
+  "author":
+    "Amelie Rosser <amelierosser1986@gmail.com> (https://www.ixviii.io/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Stinkstudios/arkit-web/issues"
   },
   "homepage": "https://github.com/Stinkstudios/arkit-web",
+  "engines": {
+    "node": ">=8.5.0",
+    "npm": ">=4.2.0",
+    "yarn": "0.27.5"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
@@ -48,58 +56,27 @@
     "babili-webpack-plugin": "^0.1.2",
     "concurrently": "^3.5.0",
     "cross-env": "^5.0.5",
+    "dotenv-webpack": "^1.5.4",
     "eslint": "^4.6.1",
-    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-airbnb-base": "^12.0.0",
     "eslint-config-prettier": "^2.4.0",
-    "eslint-import-resolver-webpack": "^0.8.3",
-    "eslint-plugin-compat": "^1.0.4",
     "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-prettier": "^2.2.0",
-    "eslint-plugin-react": "^7.3.0",
-    "eslint-plugin-redux-saga": "^0.4.0",
+    "husky": "^0.14.3",
     "live-server": "^1.2.0",
-    "postcss": "^6.0.11",
-    "postcss-cli": "^4.1.1",
-    "postcss-conditionals": "2.1.0",
-    "postcss-cssnext": "^3.0.2",
-    "postcss-each": "^0.10.0",
-    "postcss-focus": "^2.0.0",
-    "postcss-for": "2.1.1",
-    "postcss-loader": "^2.0.6",
-    "postcss-math": "^0.0.8",
-    "postcss-mixins": "^6.1.0",
-    "postcss-reporter": "^5.0.0",
-    "postcss-scss": "^1.0.2",
     "prettier": "^1.6.1",
+    "progress-bar-webpack-plugin": "^1.10.0",
     "pug-cli": "^1.0.0-alpha6",
-    "redux-saga": "^0.15.6",
-    "stylefmt": "^6.0.0",
-    "stylelint": "^8.1.1",
-    "stylelint-order": "^0.6.0",
-    "stylelint-scss": "^2.1.0",
     "webpack": "^3.5.6"
   },
   "dependencies": {
-    "autoprefixer": "^7.1.4",
-    "commander": "^2.11.0",
-    "cssnano": "^3.10.0",
     "dat-gui": "^0.5.0",
     "dotenv": "^4.0.0",
-    "dotenv-webpack": "^1.5.4",
     "happens": "^0.6.0",
-    "husky": "^0.14.3",
     "object.observe": "^0.2.6",
     "observed": "^1.1.2",
-    "postcss-automath": "^1.0.1",
-    "postcss-import": "^10.0.0",
-    "postcss-nested": "^2.1.2",
-    "postcss-simple-vars": "^4.1.0",
-    "progress-bar-webpack-plugin": "^1.10.0",
-    "shelljs": "^0.7.8",
     "stats-js": "^1.0.0-alpha1",
     "three": "^0.87.1",
-    "three-material-modifier": "^0.0.3",
-    "ua-parser-js": "^0.7.14"
+    "three-material-modifier": "^0.0.3"
   }
 }

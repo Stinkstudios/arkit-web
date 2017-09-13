@@ -1,7 +1,6 @@
 const constants = require('./internals/constants');
 require('dotenv').config();
 
-const cssFile = `${constants.CSS_FILENAME}.css`;
 const jsFile = `${constants.JS_FILENAME}.js`;
 
 module.exports = {
@@ -11,6 +10,5 @@ module.exports = {
     description: '',
     keywords: ''
   },
-  cssFile,
   jsFile
 };

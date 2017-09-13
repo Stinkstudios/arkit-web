@@ -72,11 +72,11 @@ class App {
 
     // Stats
     if (SHOW_STATS) {
-      this._renderStats = new RenderStats();
-      this._renderStats.domElement.style.position = 'absolute';
-      this._renderStats.domElement.style.left = '0px';
-      this._renderStats.domElement.style.top = '48px';
-      document.body.appendChild(this._renderStats.domElement);
+      this.renderStats = new RenderStats();
+      this.renderStats.domElement.style.position = 'absolute';
+      this.renderStats.domElement.style.left = '0px';
+      this.renderStats.domElement.style.top = '48px';
+      document.body.appendChild(this.renderStats.domElement);
       document.body.appendChild(stats.domElement);
     }
 
@@ -150,7 +150,7 @@ class App {
     this.renderer.render(this.scene, this.cameras.ar);
 
     if (SHOW_STATS) {
-      this._renderStats.update(this.renderer);
+      this.renderStats.update(this.renderer);
       stats.end();
     }
   };
@@ -266,7 +266,7 @@ class App {
     this.renderer.render(this.scene, this.cameras.dev);
 
     if (SHOW_STATS) {
-      this._renderStats.update(this.renderer);
+      this.renderStats.update(this.renderer);
       stats.end();
     }
   };
