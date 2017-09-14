@@ -9,8 +9,34 @@ import {
   EventDispatcher
 } from 'three';
 
-var OrbitControls;
+let OrbitControls;
 /**
+  The MIT License
+
+  Copyright © 2010-2017 three.js authors
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+
+  Sourced from:
+  https://github.com/mrdoob/three.js/blob/master/examples/js/controls/OrbitControls.js
+
+ *
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
  * @author alteredq / http://alteredqualia.com/
@@ -128,20 +154,20 @@ OrbitControls = function(object, domElement) {
 
   // this method is exposed, but perhaps it would be better if we can make it private...
   this.update = (function() {
-    var offset = new Vector3();
+    const offset = new Vector3();
 
     // so camera.up is the orbit axis
-    var quat = new Quaternion().setFromUnitVectors(
+    const quat = new Quaternion().setFromUnitVectors(
       object.up,
       new Vector3(0, 1, 0)
     );
-    var quatInverse = quat.clone().inverse();
+    const quatInverse = quat.clone().inverse();
 
-    var lastPosition = new Vector3();
-    var lastQuaternion = new Quaternion();
+    const lastPosition = new Vector3();
+    const lastQuaternion = new Quaternion();
 
     return function update() {
-      var position = scope.object.position;
+      const position = scope.object.position;
 
       offset.copy(position).sub(scope.target);
 
@@ -238,7 +264,7 @@ OrbitControls = function(object, domElement) {
 
     window.removeEventListener('keydown', onKeyDown, false);
 
-    //scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
+    // scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
   };
 
   //
@@ -248,8 +274,8 @@ OrbitControls = function(object, domElement) {
   var scope = this;
 
   var changeEvent = { type: 'change' };
-  var startEvent = { type: 'start' };
-  var endEvent = { type: 'end' };
+  const startEvent = { type: 'start' };
+  const endEvent = { type: 'end' };
 
   var STATE = {
     NONE: -1,
@@ -273,17 +299,17 @@ OrbitControls = function(object, domElement) {
   var panOffset = new Vector3();
   var zoomChanged = false;
 
-  var rotateStart = new Vector2();
-  var rotateEnd = new Vector2();
-  var rotateDelta = new Vector2();
+  const rotateStart = new Vector2();
+  const rotateEnd = new Vector2();
+  const rotateDelta = new Vector2();
 
-  var panStart = new Vector2();
-  var panEnd = new Vector2();
-  var panDelta = new Vector2();
+  const panStart = new Vector2();
+  const panEnd = new Vector2();
+  const panDelta = new Vector2();
 
-  var dollyStart = new Vector2();
-  var dollyEnd = new Vector2();
-  var dollyDelta = new Vector2();
+  const dollyStart = new Vector2();
+  const dollyEnd = new Vector2();
+  const dollyDelta = new Vector2();
 
   function getAutoRotationAngle() {
     return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
@@ -301,8 +327,8 @@ OrbitControls = function(object, domElement) {
     sphericalDelta.phi -= angle;
   }
 
-  var panLeft = (function() {
-    var v = new Vector3();
+  const panLeft = (function() {
+    const v = new Vector3();
 
     return function panLeft(distance, objectMatrix) {
       v.setFromMatrixColumn(objectMatrix, 0); // get X column of objectMatrix
@@ -312,8 +338,8 @@ OrbitControls = function(object, domElement) {
     };
   })();
 
-  var panUp = (function() {
-    var v = new Vector3();
+  const panUp = (function() {
+    const v = new Vector3();
 
     return function panUp(distance, objectMatrix) {
       v.setFromMatrixColumn(objectMatrix, 1); // get Y column of objectMatrix
@@ -324,20 +350,20 @@ OrbitControls = function(object, domElement) {
   })();
 
   // deltaX and deltaY are in pixels; right and down are positive
-  var pan = (function() {
-    var offset = new Vector3();
+  const pan = (function() {
+    const offset = new Vector3();
 
     return function pan(deltaX, deltaY) {
-      var element =
+      const element =
         scope.domElement === document
           ? scope.domElement.body
           : scope.domElement;
 
       if (scope.object instanceof PerspectiveCamera) {
         // perspective
-        var position = scope.object.position;
+        const position = scope.object.position;
         offset.copy(position).sub(scope.target);
-        var targetDistance = offset.length();
+        let targetDistance = offset.length();
 
         // half of the fov is center to top of screen
         targetDistance *= Math.tan(scope.object.fov / 2 * Math.PI / 180.0);
@@ -418,30 +444,30 @@ OrbitControls = function(object, domElement) {
   //
 
   function handleMouseDownRotate(event) {
-    //console.log( 'handleMouseDownRotate' );
+    // console.log( 'handleMouseDownRotate' );
 
     rotateStart.set(event.clientX, event.clientY);
   }
 
   function handleMouseDownDolly(event) {
-    //console.log( 'handleMouseDownDolly' );
+    // console.log( 'handleMouseDownDolly' );
 
     dollyStart.set(event.clientX, event.clientY);
   }
 
   function handleMouseDownPan(event) {
-    //console.log( 'handleMouseDownPan' );
+    // console.log( 'handleMouseDownPan' );
 
     panStart.set(event.clientX, event.clientY);
   }
 
   function handleMouseMoveRotate(event) {
-    //console.log( 'handleMouseMoveRotate' );
+    // console.log( 'handleMouseMoveRotate' );
 
     rotateEnd.set(event.clientX, event.clientY);
     rotateDelta.subVectors(rotateEnd, rotateStart);
 
-    var element =
+    const element =
       scope.domElement === document ? scope.domElement.body : scope.domElement;
 
     // rotating across whole screen goes 360 degrees around
@@ -460,7 +486,7 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleMouseMoveDolly(event) {
-    //console.log( 'handleMouseMoveDolly' );
+    // console.log( 'handleMouseMoveDolly' );
 
     dollyEnd.set(event.clientX, event.clientY);
 
@@ -478,7 +504,7 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleMouseMovePan(event) {
-    //console.log( 'handleMouseMovePan' );
+    // console.log( 'handleMouseMovePan' );
 
     panEnd.set(event.clientX, event.clientY);
 
@@ -508,7 +534,7 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleKeyDown(event) {
-    //console.log( 'handleKeyDown' );
+    // console.log( 'handleKeyDown' );
 
     switch (event.keyCode) {
       case scope.keys.UP:
@@ -534,35 +560,35 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleTouchStartRotate(event) {
-    //console.log( 'handleTouchStartRotate' );
+    // console.log( 'handleTouchStartRotate' );
 
     rotateStart.set(event.touches[0].pageX, event.touches[0].pageY);
   }
 
   function handleTouchStartDolly(event) {
-    //console.log( 'handleTouchStartDolly' );
+    // console.log( 'handleTouchStartDolly' );
 
-    var dx = event.touches[0].pageX - event.touches[1].pageX;
-    var dy = event.touches[0].pageY - event.touches[1].pageY;
+    const dx = event.touches[0].pageX - event.touches[1].pageX;
+    const dy = event.touches[0].pageY - event.touches[1].pageY;
 
-    var distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
     dollyStart.set(0, distance);
   }
 
   function handleTouchStartPan(event) {
-    //console.log( 'handleTouchStartPan' );
+    // console.log( 'handleTouchStartPan' );
 
     panStart.set(event.touches[0].pageX, event.touches[0].pageY);
   }
 
   function handleTouchMoveRotate(event) {
-    //console.log( 'handleTouchMoveRotate' );
+    // console.log( 'handleTouchMoveRotate' );
 
     rotateEnd.set(event.touches[0].pageX, event.touches[0].pageY);
     rotateDelta.subVectors(rotateEnd, rotateStart);
 
-    var element =
+    const element =
       scope.domElement === document ? scope.domElement.body : scope.domElement;
 
     // rotating across whole screen goes 360 degrees around
@@ -581,12 +607,12 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleTouchMoveDolly(event) {
-    //console.log( 'handleTouchMoveDolly' );
+    // console.log( 'handleTouchMoveDolly' );
 
-    var dx = event.touches[0].pageX - event.touches[1].pageX;
-    var dy = event.touches[0].pageY - event.touches[1].pageY;
+    const dx = event.touches[0].pageX - event.touches[1].pageX;
+    const dy = event.touches[0].pageY - event.touches[1].pageY;
 
-    var distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
     dollyEnd.set(0, distance);
 
@@ -604,7 +630,7 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleTouchMovePan(event) {
-    //console.log( 'handleTouchMovePan' );
+    // console.log( 'handleTouchMovePan' );
 
     panEnd.set(event.touches[0].pageX, event.touches[0].pageY);
 
@@ -618,7 +644,7 @@ OrbitControls = function(object, domElement) {
   }
 
   function handleTouchEnd(event) {
-    //console.log( 'handleTouchEnd' );
+    // console.log( 'handleTouchEnd' );
   }
 
   //
@@ -852,7 +878,7 @@ OrbitControls.prototype.constructor = OrbitControls;
 
 Object.defineProperties(OrbitControls.prototype, {
   center: {
-    get: function() {
+    get() {
       console.warn('OrbitControls: .center has been renamed to .target');
       return this.target;
     }
@@ -861,14 +887,14 @@ Object.defineProperties(OrbitControls.prototype, {
   // backward compatibility
 
   noZoom: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .noZoom has been deprecated. Use .enableZoom instead.'
       );
       return !this.enableZoom;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .noZoom has been deprecated. Use .enableZoom instead.'
       );
@@ -877,14 +903,14 @@ Object.defineProperties(OrbitControls.prototype, {
   },
 
   noRotate: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .noRotate has been deprecated. Use .enableRotate instead.'
       );
       return !this.enableRotate;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .noRotate has been deprecated. Use .enableRotate instead.'
       );
@@ -893,14 +919,14 @@ Object.defineProperties(OrbitControls.prototype, {
   },
 
   noPan: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .noPan has been deprecated. Use .enablePan instead.'
       );
       return !this.enablePan;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .noPan has been deprecated. Use .enablePan instead.'
       );
@@ -909,14 +935,14 @@ Object.defineProperties(OrbitControls.prototype, {
   },
 
   noKeys: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .noKeys has been deprecated. Use .enableKeys instead.'
       );
       return !this.enableKeys;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .noKeys has been deprecated. Use .enableKeys instead.'
       );
@@ -925,14 +951,14 @@ Object.defineProperties(OrbitControls.prototype, {
   },
 
   staticMoving: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.'
       );
       return !this.enableDamping;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.'
       );
@@ -941,14 +967,14 @@ Object.defineProperties(OrbitControls.prototype, {
   },
 
   dynamicDampingFactor: {
-    get: function() {
+    get() {
       console.warn(
         'OrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.'
       );
       return this.dampingFactor;
     },
 
-    set: function(value) {
+    set(value) {
       console.warn(
         'OrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.'
       );

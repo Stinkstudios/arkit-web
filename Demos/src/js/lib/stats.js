@@ -1,4 +1,5 @@
 const Stats = require('stats-js');
+
 const stats = new Stats();
 
 stats.domElement.style.position = 'absolute';

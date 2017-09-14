@@ -18,6 +18,7 @@ extension MTKView : RenderDestinationProvider {
 class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKScriptMessageHandler {
     
     let DEBUG = false
+    let DEFAULT_DEMO = "index"
     
     var session: ARSession!
     var renderer: Renderer!
@@ -64,7 +65,7 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
             view.addSubview(webView)
             
             // Load first demo
-            self.loadWebPage(page: "index")
+            self.loadWebPage(page: DEFAULT_DEMO)
             
             guard view.device != nil else {
                 print("Metal is not supported on this device")

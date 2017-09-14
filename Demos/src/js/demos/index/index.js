@@ -5,7 +5,9 @@ import {
   Object3D,
   Vector3,
   GridHelper,
-  AxisHelper
+  AxisHelper,
+  AmbientLight,
+  DirectionalLight
 } from 'three';
 import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
@@ -18,7 +20,6 @@ import { IS_NATIVE } from '../../arkit/constants';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 import TouchControls from '../../lib/touch-controls';
-import lights from './lights';
 
 const SHOW_STATS = false;
 
@@ -57,9 +58,14 @@ class App {
     };
 
     // Lights
-    Object.keys(lights).forEach(light => {
-      this.scene.add(lights[light]);
-    });
+    this.lights = {
+      ambient: new AmbientLight(0xd4d4d4),
+      directional: new DirectionalLight(0xffffff, 0.6)
+    };
+
+    this.lights.directional.position.set(1, 1, 1);
+    this.scene.add(this.lights.ambient);
+    this.scene.add(this.lights.directional);
 
     // Stats
     if (SHOW_STATS) {
@@ -147,7 +153,7 @@ class App {
   };
 
   update(data) {
-    lights.ambient.intensity = data.ambientIntensity;
+    this.lights.ambient.intensity = data.ambientIntensity;
 
     this.cameras.ar.matrixWorldInverse.fromArray(
       data.camera.matrixWorldInverse

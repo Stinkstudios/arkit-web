@@ -18,10 +18,10 @@ const gui = new dat.GUI();
 gui.open();
 
 gui.add(controller, 'demo', demos).onChange(value => {
+  const page = value === demos[0] ? 'index' : value;
   if (IS_NATIVE) {
-    ARKit.loadPage(value);
+    ARKit.loadPage(page);
   } else {
-    const page = value === demos[0] ? 'index' : value;
     window.location.href = `${page}.html`;
   }
 });

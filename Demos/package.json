@@ -18,15 +18,17 @@
     "build:html":
       "cross-env NODE_ENV=production pug ./src/templates/*.pug --obj ./config.js --pretty --out ../ARKitWeb/www",
     "build:clean": "rm -rf ../ARKitWeb/www/*",
-    "assets": "cp -R ./assets/ ../ARKitWeb/www/assets;",
+    "assets":
+      "mkdir -p ../ARKitWeb/www/assets; cp -R ./assets/ ../ARKitWeb/www/assets;",
     "prettier":
       "prettier --write --single-quote --print-width 80 './src/js/**/*.js'",
     "prettier:internals":
       "prettier --write --single-quote --print-width 80 \"internals/**/*.js\"",
     "formatting": "yarn run prettier && yarn run prettier:internals",
-    "lint:fix": "eslint --config .eslintrc.json --ext .js ./src --cache --fix",
+    "lint:fix":
+      "eslint --config .eslintrc.json --ext .js ./src/js --cache --fix",
     "lint":
-      "eslint --config .eslintrc.json --ext .js ./src ./internals --cache",
+      "eslint --config .eslintrc.json --ext .js ./src/js ./internals --cache",
     "precommit": "yarn run lint",
     "tunnel": "ngrok http 8080"
   },

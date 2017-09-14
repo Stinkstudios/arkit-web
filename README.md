@@ -44,7 +44,7 @@ We recommend any of the following devices: iPad (2017), iPad Pro, iPhone 7 and 7
 
 This project is compromised of two parts:
 
-1. A native iOS app that confugures ARKit and exposes the frame data to a WKWebView layer.
+1. A native iOS app that configures ARKit and exposes the frame data to a WKWebView layer.
 2. A series of demos showing the features of ARKit and how to utilise the data with [threejs](https://threejs.org/).
 
 ### Installation
@@ -55,7 +55,7 @@ This project is compromised of two parts:
 
 ### Tasks
 
-* `yarn start` - Start the dev server. *Note `.env` needs to be created first*
+* `yarn start` - Start the dev server.
 * `yarn tunnel` - Start an ngrok connection for live development
 
 Check `Demos/package.json` for the other available tasks.

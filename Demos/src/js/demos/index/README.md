@@ -9,5 +9,7 @@ Refer to the [installation instructions](../../../../../README.md#installation) 
 3. Open `arkit-web/ARKitWeb.xcodeproj` in Xcode
 4. Click the `Build Settings` tab
 5. Scroll down and locate the `DEV_URL` flag
-8. Edit `DEV_URL` field with `<ngrok_https>/index.html`
-7. Click `Build and run`
+6. Paste the ngrok https url into the `DEV_URL` field
+7. Set `let DEBUG = true` in `ARKitWeb/ViewController.swift` for live reloading
+8. Set `let DEFAULT_DEMO = "index"` in `ARKitWeb/ViewController.swift`
+9. Click `Build and run`

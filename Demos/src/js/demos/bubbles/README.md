@@ -7,11 +7,12 @@ Refer to the [installation instructions](../../../../../README.md#installation) 
 1. Open your terminal and run `yarn start` and `yarn tunnel` from the `arkit-web/Demos` directory
 2. Copy the ngrok https url from terminal
 3. Open `arkit-web/ARKitWeb.xcodeproj` in Xcode
-4. Open `arkit-web/ARKitWeb/ViewController.swift`
-5. Click the `Build Settings` tab
-6. Scroll down and locate the `DEV_URL` flag
-7. Edit `DEV_URL` field with `<ngrok_https>/bubbles.html`
-8. Click `Build and run`
+4. Click the `Build Settings` tab
+5. Scroll down and locate the `DEV_URL` flag
+6. Paste the ngrok https url into the `DEV_URL` field
+7. Set `let DEBUG = true` in `ARKitWeb/ViewController.swift` for live reloading
+8. Set `let DEFAULT_DEMO = "bubbles"` in `ARKitWeb/ViewController.swift`
+9. Click `Build and run`
 
 ## Notes
 

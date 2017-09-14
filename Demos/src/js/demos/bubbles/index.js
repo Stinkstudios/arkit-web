@@ -7,7 +7,9 @@ import {
   GridHelper,
   AxisHelper,
   PCFSoftShadowMap,
-  Math as MathUtils
+  Math as MathUtils,
+  AmbientLight,
+  DirectionalLight
 } from 'three';
 import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
@@ -19,7 +21,6 @@ import ARVideoTexture from '../../objects/video-texture';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 import TouchControls from '../../lib/touch-controls';
-import lights from './lights';
 
 // Objects
 import Bubbles from './objects/bubbles/bubbles';
@@ -64,9 +65,14 @@ class App {
     };
 
     // Lights
-    Object.keys(lights).forEach(light => {
-      this.scene.add(lights[light]);
-    });
+    this.lights = {
+      ambient: new AmbientLight(0xd4d4d4),
+      directional: new DirectionalLight(0xffffff, 1)
+    };
+
+    this.lights.directional.position.set(1, 1, 1);
+    this.scene.add(this.lights.ambient);
+    this.scene.add(this.lights.directional);
 
     // Stats
     if (SHOW_STATS) {
@@ -148,12 +154,12 @@ class App {
 
   onTouchMove = event => {
     // Direction
-    lights.directional.position.x = MathUtils.lerp(-1, 1, event[0].x);
-    lights.directional.position.z = MathUtils.lerp(-1, 1, event[0].y);
+    this.lights.directional.position.x = MathUtils.lerp(-1, 1, event[0].x);
+    this.lights.directional.position.z = MathUtils.lerp(-1, 1, event[0].y);
   };
 
   update(data) {
-    lights.ambient.intensity = data.ambientIntensity;
+    this.lights.ambient.intensity = data.ambientIntensity;
 
     if (data.image) {
       this.videoTexture.update(data.image);

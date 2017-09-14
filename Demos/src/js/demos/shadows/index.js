@@ -8,7 +8,10 @@ import {
   GridHelper,
   AxisHelper,
   PCFSoftShadowMap,
-  Math as MathUtils
+  Math as MathUtils,
+  AmbientLight,
+  DirectionalLight,
+  SpotLight
 } from 'three';
 import '../gui';
 import OrbitControls from '../../lib/OrbitControls';
@@ -20,7 +23,6 @@ import { IS_NATIVE } from '../../arkit/constants';
 import RenderStats from '../../lib/render-stats';
 import stats from '../../lib/stats';
 import TouchControls from '../../lib/touch-controls';
-import lights from './lights';
 
 // Objects
 import Floor from './objects/floor/floor';
@@ -66,9 +68,26 @@ class App {
     };
 
     // Lights
-    Object.keys(lights).forEach(light => {
-      this.scene.add(lights[light]);
-    });
+
+    this.lights = {
+      ambient: new AmbientLight(0xd4d4d4),
+      directional: new DirectionalLight(0xffffff, 1),
+      spot: new SpotLight(0xffffff, 1)
+    };
+
+    this.lights.spot.position.set(0.95, 0.95, 0.95);
+
+    this.lights.spot.castShadow = true;
+    this.lights.spot.shadow.mapSize.width = 1024;
+    this.lights.spot.shadow.mapSize.height = 1024;
+
+    this.lights.spot.shadow.camera.near = 1;
+    this.lights.spot.shadow.camera.far = 500;
+    this.lights.spot.shadow.camera.fov = 60;
+
+    this.scene.add(this.lights.ambient);
+    this.scene.add(this.lights.directional);
+    this.scene.add(this.lights.spot);
 
     // Stats
     if (SHOW_STATS) {
@@ -189,15 +208,15 @@ class App {
 
   onTouchMove = event => {
     // Position
-    lights.spot.position.x = MathUtils.lerp(-2, 2, event[0].x);
-    lights.spot.position.z = MathUtils.lerp(-2, 2, event[0].y);
+    this.lights.spot.position.x = MathUtils.lerp(-2, 2, event[0].x);
+    this.lights.spot.position.z = MathUtils.lerp(-2, 2, event[0].y);
     // Direction
-    lights.directional.position.x = MathUtils.lerp(-1, 1, event[0].x);
-    lights.directional.position.z = MathUtils.lerp(-1, 1, event[0].y);
+    this.lights.directional.position.x = MathUtils.lerp(-1, 1, event[0].x);
+    this.lights.directional.position.z = MathUtils.lerp(-1, 1, event[0].y);
   };
 
   update(data) {
-    lights.ambient.intensity = data.ambientIntensity;
+    this.lights.ambient.intensity = data.ambientIntensity;
 
     this.cameras.ar.matrixWorldInverse.fromArray(
       data.camera.matrixWorldInverse
