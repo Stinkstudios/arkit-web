@@ -1,47 +1,34 @@
 # ARKit Web
 
-A starter kit for using [ARKit](https://developer.apple.com/arkit/) with WebGL.
+An experimetal iOS app for rapidly prototyping [ARKit](https://developer.apple.com/arkit/) experiences with WebGL.
 
 ## Features
 
 * Metal rendering for Camera feed
-* threejs for WebGL content
-* Use ngrok for live development, local resources for release
-* ARKit interface model for event subscription
-
-## Demos
-
-* [Anchors](Demos/src/js/demos/index/README.md)
-* [Shadows](Demos/src/js/demos/shadows/README.md)
-* [Bubbles](Demos/src/js/demos/bubbles/README.md)
-* [PointCloud](Demos/src/js/demos/pointcloud/README.md)
-
-## Getting started
-
-Read the following on how to setup, run and debug.
-
-* [ARKitWeb](ARKitWeb/README.md)
-* [Demos](Demos/README.md)
+* WebGL library free - use whatever graphics library you prefer
+* Rapid prototyping using ngrok and Safari web inspector tools
+* Simple JavaScript API for configuring ARKit and subscribing to events
 
 ## Example
 
 ```
 import ARKit from './arkit/arkit';
+import ARConfig from './arkit/config';
+
+/* Turn on features */
+ARConfig.imageFrame = true;
+ARConfig.pointCloud = true;
 
 /* Get latest frame data */
 ARKit.on('frame', data => {});
-
-/* Subsribe to hit test result */
-ARKit.on('hitTest', data => {});
-
-/* Call hit test from touch coordinates */
-ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 ```
 
 ## Requirements
 
 * iOS11 (currently in beta and can be installed from [here](https://beta.apple.com/sp/betaprogram/))
 * A device which has A9 and A10 processors
+
+We recommend any of the following devices: iPad (2017), iPad Pro, iPhone 7 and 7 Plus.
 
 ## Implemented
 
@@ -53,14 +40,39 @@ ARKit.hitTest(0.5, 0.5, ARHitTestResultType.featurePoint);
 * [ARSession remove(anchor:)](https://developer.apple.com/documentation/arkit/arsession/2865607-remove)
 * Camera feed as base64 to WebGL texture
 
-## Todo
+## Getting started
 
-* Object occlusion using a depth texture
+This project is compromised of two parts:
 
-## Notes
+1. A native iOS app that confugures ARKit and exposes the frame data to a WKWebView layer.
+2. A series of demos showing the features of ARKit and how to utilise the data with [threejs](https://threejs.org/).
 
-* Setting the pixel ratio to anything higher than 1 causes significant sync drops for the anchor tracking
-* The `matrixWorldInverse` is now set directly on the camera from the frame data. I had to duplicate three's base camera class `arkit/camera.js` as the `matrixWorldInverse` gets set in the `WebGLRenderer.js`
+### Installation
+
+1. Open your terminal and navigate to the `arkit-web/Demos` directory
+2. If you don't have `yarn` globally run `npm i yarn --global`
+3. Install the project dependencies by running `yarn`
+
+### Tasks
+
+* `yarn start` - Start the dev server. *Note `.env` needs to be created first*
+* `yarn tunnel` - Start an ngrok connection for live development
+
+Check `Demos/package.json` for the other available tasks.
+
+### Demos
+
+Each demo contains instructions for setting up and running. 
+
+* [Anchors](Demos/src/js/demos/index/README.md)
+* [Shadows](Demos/src/js/demos/shadows/README.md)
+* [Bubbles](Demos/src/js/demos/bubbles/README.md)
+* [PointCloud](Demos/src/js/demos/pointcloud/README.md)
+
+### Debugging
+
+Use the [Safari Technology Preview](https://developer.apple.com/safari/technology-preview/) web inspector tools.
+
 
 ## Resources
 
