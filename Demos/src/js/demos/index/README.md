@@ -1,8 +1,8 @@
 # AR anchors
 
-This demo allows you to place ARAnchors within your world by tapping on the screen. Once an anchor is added a wireframe cube is rendered above a solid cube to tracking between native and webgl rendering.
+This demo allows you to place ARAnchors within your world by tapping on the screen.
 
-Refer to the [installation instructions](../../../../README.md#installation) before running this demo.
+Refer to the [installation instructions](../../../../../README.md#installation) before running this demo.
 
 1. Open your terminal and run `yarn start` and `yarn tunnel` from the `arkit-web/Demos` directory
 2. Copy the ngrok https url from terminal
