@@ -1,6 +1,6 @@
 # ARKit Web
 
-An experimetal iOS app for rapidly prototyping [ARKit](https://developer.apple.com/arkit/) experiences with WebGL.
+An experimental iOS app for rapidly prototyping [ARKit](https://developer.apple.com/arkit/) experiences with WebGL.
 
 <img src="Demos/captures/shadows.gif" width="49.5%" alt="Shadows demo" /> <img src="Demos/captures/anchors.gif" width="49.5%" alt="Anchors demo"/> 
 
