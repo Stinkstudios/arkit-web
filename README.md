@@ -2,6 +2,8 @@
 
 An experimetal iOS app for rapidly prototyping [ARKit](https://developer.apple.com/arkit/) experiences with WebGL.
 
+<img src="Demos/captures/shadows.gif" style="max-width: 45%" alt="Shadows demo" /> <img src="Demos/captures/anchors.gif" style="max-width: 45%; margin-left: 1%;" alt="Anchors demo"/> 
+
 ## Features
 
 * Metal rendering for Camera feed
