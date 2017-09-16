@@ -44,7 +44,7 @@ We recommend any of the following devices: iPad (2017), iPad Pro, iPhone 7 and 7
 
 ## Getting started
 
-This project is compromised of two parts:
+This project is comprised of two parts:
 
 1. A native iOS app that configures ARKit and exposes the frame data to a WKWebView layer.
 2. A series of demos showing the features of ARKit and how to utilise the data with [threejs](https://threejs.org/).
