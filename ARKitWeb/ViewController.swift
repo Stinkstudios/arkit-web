@@ -369,16 +369,19 @@ class ViewController: UIViewController, MTKViewDelegate, ARSessionDelegate, WKSc
      */
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         var ambientIntensity: Float = 1.0
+        var ambientColor = [255.0, 255.0, 255.0]
         
         if let lightEstimate = frame.lightEstimate {
             ambientIntensity = Float(lightEstimate.ambientIntensity) / 1000.0
+            ambientColor = kelvinToRGB(temperatureKelvin: frame.lightEstimate!.ambientColorTemperature)
         }
-        
+ 
         // Store all data in dict, parse as json to send to the web view
         // floats and matrix strings need to be parsed client side
         var data = Dictionary<String, Any>()
         data["camera"] = self.getCameraData(camera: frame.camera)
         data["anchors"] = self.getAnchorsData(anchors: frame.anchors)
+        data["ambientColor"] = ambientColor
         data["ambientIntensity"] = ambientIntensity
         
         if (ARConfig.imageFrame) {
